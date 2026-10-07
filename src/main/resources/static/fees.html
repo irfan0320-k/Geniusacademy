@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Fees | Genius Academy</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+<script src="js/app.js"></script>
+
+<script>
+
+    // ==========================================
+    // LAYOUT
+    // ==========================================
+
+    renderLayout("fees", "Fees Management");
+
+
+    // ==========================================
+    // DATA
+    // ==========================================
+
+    let students = [];
+
+    let fees = [];
+
+    let filteredFees = [];
+
+
+    // ==========================================
+    // LOAD DATA
+    // ==========================================
+
+    async function loadFees() {
+
+        try {
+
+            const [
+                studentsResponse,
+                feesResponse
+            ] = await Promise.all([
+
+                fetch("/api/students"),
+
+                fetch("/api/fees")
+
+            ]);
+
+
+            if (
+                !studentsResponse.ok ||
+                !feesResponse.ok
+            ) {
+
+                throw new Error(
+                    "Unable to load fees"
+                );
+
+            }
+
+
+            students =
+                await studentsResponse.json();
+
+            fees =
+                await feesResponse.json();
+
+            filteredFees =
+                [...fees];
+
+
+            createPage();
+
+            renderFees();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "pageContent"
+            ).innerHTML = `
+
+                <div class="alert alert-danger">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    Unable to load fee data.
+
+                    <br>
+
+                    Please make sure Spring Boot
+                    is running.
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+    // ==========================================
+    // CREATE PAGE
+    // ==========================================
+
+    function createPage() {
+
+        document.getElementById(
+            "pageContent"
+        ).innerHTML = `
+
+            <!-- PAGE HEADER -->
+
+            <div class="d-flex
+                        justify-content-between
+                        align-items-center
+                        mb-4
+                        flex-wrap
+                        gap-3">
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                        Fees
+
+                    </h4>
+
+                    <p class="text-muted mb-0">
+
+                        Manage student fee payments
+
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="fees-form.html"
+                    class="btn btn-gold">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                    Add Fee
+
+                </a>
+
+            </div>
+
+
+            <!-- SUMMARY CARDS -->
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-4">
+
+                    <div class="stat-card">
+
+                        <div class="d-flex
+                                    align-items-center
+                                    gap-3">
+
+                            <div
+                                class="stat-icon icon-blue">
+
+                                <i class="bi bi-wallet2"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="text-muted small">
+
+                                    Total Fees
+
+                                </div>
+
+                                <h4
+                                    id="totalFees"
+                                    class="mb-0 fw-bold">
+
+                                    ₹0
+
+                                </h4>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="stat-card">
+
+                        <div class="d-flex
+                                    align-items-center
+                                    gap-3">
+
+                            <div
+                                class="stat-icon icon-green">
+
+                                <i class="bi bi-check-circle"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="text-muted small">
+
+                                    Paid Amount
+
+                                </div>
+
+                                <h4
+                                    id="paidFees"
+                                    class="mb-0 fw-bold">
+
+                                    ₹0
+
+                                </h4>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="stat-card">
+
+                        <div class="d-flex
+                                    align-items-center
+                                    gap-3">
+
+                            <div
+                                class="stat-icon icon-gold">
+
+                                <i class="bi bi-hourglass-split"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="text-muted small">
+
+                                    Pending Amount
+
+                                </div>
+
+                                <h4
+                                    id="pendingFees"
+                                    class="mb-0 fw-bold">
+
+                                    ₹0
+
+                                </h4>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FEES PANEL -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h5 class="mb-1">
+
+                            <i class="bi bi-receipt"></i>
+
+                            Fee Records
+
+                        </h5>
+
+                        <small class="text-muted">
+
+                            Search and filter payments
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel-body">
+
+
+                    <!-- FILTERS -->
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-4">
+
+                            <label
+                                class="form-label fw-semibold">
+
+                                Student
+
+                            </label>
+
+                            <select
+                                id="studentFilter"
+                                class="form-select">
+
+                                <option value="">
+
+                                    All Students
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <label
+                                class="form-label fw-semibold">
+
+                                Payment Date
+
+                            </label>
+
+                            <input
+                                type="date"
+                                id="dateFilter"
+                                class="form-control">
+
+                        </div>
+
+
+                        <div class="col-md-3">
+
+                            <label
+                                class="form-label fw-semibold">
+
+                                Status
+
+                            </label>
+
+                            <select
+                                id="statusFilter"
+                                class="form-select">
+
+                                <option value="">
+
+                                    All Status
+
+                                </option>
+
+                                <option value="Paid">
+
+                                    Paid
+
+                                </option>
+
+                                <option value="Pending">
+
+                                    Pending
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-2
+                                    d-flex
+                                    align-items-end">
+
+                            <button
+                                type="button"
+                                id="clearFilter"
+                                class="btn btn-outline-secondary w-100">
+
+                                <i class="bi bi-x-circle"></i>
+
+                                Clear
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TABLE -->
+
+                    <div class="table-responsive">
+
+                        <table
+                            class="table table-hover align-middle">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>ID</th>
+
+                                    <th>Student</th>
+
+                                    <th>Amount</th>
+
+                                    <th>Payment Date</th>
+
+                                    <th>Status</th>
+
+                                    <th>Actions</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                id="feesTableBody">
+
+                                <tr>
+
+                                    <td
+                                        colspan="6"
+                                        class="text-center py-4">
+
+                                        Loading...
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        populateStudentFilter();
+
+        setupFilters();
+
+    }
+
+
+    // ==========================================
+    // STUDENT FILTER
+    // ==========================================
+
+    function populateStudentFilter() {
+
+        const select =
+            document.getElementById(
+                "studentFilter"
+            );
+
+
+        students.forEach(student => {
+
+            const id =
+                student.id
+                ??
+                student.studentId;
+
+
+            const name =
+                student.name
+                ??
+                student.studentName
+                ??
+                "Unknown Student";
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value = id;
+
+            option.textContent = name;
+
+
+            select.appendChild(option);
+
+        });
+
+    }
+
+
+    // ==========================================
+    // FILTER SETUP
+    // ==========================================
+
+    function setupFilters() {
+
+        document.getElementById(
+            "studentFilter"
+        ).addEventListener(
+            "change",
+            applyFilters
+        );
+
+
+        document.getElementById(
+            "dateFilter"
+        ).addEventListener(
+            "change",
+            applyFilters
+        );
+
+
+        document.getElementById(
+            "statusFilter"
+        ).addEventListener(
+            "change",
+            applyFilters
+        );
+
+
+        document.getElementById(
+            "clearFilter"
+        ).addEventListener(
+            "click",
+            clearFilters
+        );
+
+    }
+
+
+    // ==========================================
+    // APPLY FILTERS
+    // ==========================================
+
+    function applyFilters() {
+
+        const studentId =
+            document.getElementById(
+                "studentFilter"
+            ).value;
+
+
+        const date =
+            document.getElementById(
+                "dateFilter"
+            ).value;
+
+
+        const status =
+            document.getElementById(
+                "statusFilter"
+            ).value;
+
+
+        filteredFees =
+            fees.filter(fee => {
+
+                const feeStudentId =
+                    fee.studentId
+                    ??
+                    fee.student_id;
+
+
+                const paymentDate =
+                    fee.paymentDate
+                    ??
+                    fee.payment_date
+                    ??
+                    "";
+
+
+                const feeStatus =
+                    fee.status
+                    ??
+                    "";
+
+
+                const matchesStudent =
+                    !studentId
+                    ||
+                    Number(feeStudentId)
+                    === Number(studentId);
+
+
+                const matchesDate =
+                    !date
+                    ||
+                    String(paymentDate)
+                    === String(date);
+
+
+                const matchesStatus =
+                    !status
+                    ||
+                    String(feeStatus)
+                    .toLowerCase()
+                    === String(status)
+                    .toLowerCase();
+
+
+                return (
+                    matchesStudent
+                    &&
+                    matchesDate
+                    &&
+                    matchesStatus
+                );
+
+            });
+
+
+        renderFees();
+
+    }
+
+
+    // ==========================================
+    // CLEAR FILTERS
+    // ==========================================
+
+    function clearFilters() {
+
+        document.getElementById(
+            "studentFilter"
+        ).value = "";
+
+
+        document.getElementById(
+            "dateFilter"
+        ).value = "";
+
+
+        document.getElementById(
+            "statusFilter"
+        ).value = "";
+
+
+        filteredFees =
+            [...fees];
+
+
+        renderFees();
+
+    }
+
+
+    // ==========================================
+    // STUDENT NAME
+    // ==========================================
+
+    function getStudentName(studentId) {
+
+        const student =
+            students.find(
+                student =>
+                    Number(
+                        student.id
+                        ??
+                        student.studentId
+                    )
+                    === Number(studentId)
+            );
+
+
+        if (!student) {
+
+            return "Unknown Student";
+
+        }
+
+
+        return (
+            student.name
+            ??
+            student.studentName
+            ??
+            "Unknown Student"
+        );
+
+    }
+
+
+    // ==========================================
+    // DATE FORMAT
+    // ==========================================
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "-";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return value;
+
+        }
+
+
+        return date.toLocaleDateString(
+            "en-GB"
+        );
+
+    }
+
+
+    // ==========================================
+    // STATUS BADGE
+    // ==========================================
+
+    function statusBadge(status) {
+
+        const value =
+            String(
+                status ?? ""
+            ).toLowerCase();
+
+
+        if (value === "paid") {
+
+            return `
+
+                <span
+                    class="badge badge-paid">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    Paid
+
+                </span>
+
+            `;
+
+        }
+
+
+        if (value === "pending") {
+
+            return `
+
+                <span
+                    class="badge badge-pending">
+
+                    <i class="bi bi-hourglass-split"></i>
+
+                    Pending
+
+                </span>
+
+            `;
+
+        }
+
+
+        return `
+
+            <span class="badge bg-secondary">
+
+                ${status ?? "-"}
+
+            </span>
+
+        `;
+
+    }
+
+
+    // ==========================================
+    // RENDER FEES
+    // ==========================================
+
+    function renderFees() {
+
+        const tbody =
+            document.getElementById(
+                "feesTableBody"
+            );
+
+
+        if (!tbody) {
+            return;
+        }
+
+
+        // TOTAL AMOUNT
+
+        const total =
+            fees.reduce(
+                (sum, fee) =>
+                    sum +
+                    Number(
+                        fee.amount ?? 0
+                    ),
+                0
+            );
+
+
+        // PAID
+
+        const paid =
+            fees
+                .filter(fee =>
+                    String(
+                        fee.status ?? ""
+                    ).toLowerCase()
+                    === "paid"
+                )
+                .reduce(
+                    (sum, fee) =>
+                        sum +
+                        Number(
+                            fee.amount ?? 0
+                        ),
+                    0
+                );
+
+
+        // PENDING
+
+        const pending =
+            fees
+                .filter(fee =>
+                    String(
+                        fee.status ?? ""
+                    ).toLowerCase()
+                    === "pending"
+                )
+                .reduce(
+                    (sum, fee) =>
+                        sum +
+                        Number(
+                            fee.amount ?? 0
+                        ),
+                    0
+                );
+
+
+        document.getElementById(
+            "totalFees"
+        ).textContent =
+            formatCurrency(total);
+
+
+        document.getElementById(
+            "paidFees"
+        ).textContent =
+            formatCurrency(paid);
+
+
+        document.getElementById(
+            "pendingFees"
+        ).textContent =
+            formatCurrency(pending);
+
+
+        // EMPTY
+
+        if (
+            filteredFees.length === 0
+        ) {
+
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="text-center py-5">
+
+                        <i
+                            class="bi bi-receipt fs-2
+                                   text-muted">
+                        </i>
+
+                        <div
+                            class="mt-2 text-muted">
+
+                            No fee records found.
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        // TABLE
+
+        tbody.innerHTML =
+            filteredFees
+            .map(fee => {
+
+                const id =
+                    fee.id
+                    ??
+                    fee.feeId
+                    ??
+                    fee.fee_id;
+
+
+                const studentId =
+                    fee.studentId
+                    ??
+                    fee.student_id;
+
+
+                const amount =
+                    Number(
+                        fee.amount ?? 0
+                    );
+
+
+                const paymentDate =
+                    fee.paymentDate
+                    ??
+                    fee.payment_date
+                    ??
+                    "";
+
+
+                const status =
+                    fee.status
+                    ??
+                    "-";
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+
+                            <strong>
+                                ${id}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                ${getStudentName(
+                                    studentId
+                                )}
+
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+
+                                ${formatCurrency(
+                                    amount
+                                )}
+
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            ${formatDate(
+                                paymentDate
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${statusBadge(
+                                status
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            <div
+                                class="d-flex
+                                       gap-2
+                                       flex-wrap">
+
+                                <a
+                                    href="fees-form.html?id=${id}"
+                                    class="btn btn-sm
+                                           btn-outline-secondary">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                    Edit
+
+                                </a>
+
+
+                                <button
+                                    type="button"
+                                    class="btn btn-sm
+                                           btn-outline-danger"
+                                    onclick="deleteFee(${id})">
+
+                                    <i class="bi bi-trash"></i>
+
+                                    Delete
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            })
+            .join("");
+
+    }
+
+
+    // ==========================================
+    // CURRENCY
+    // ==========================================
+
+    function formatCurrency(amount) {
+
+        return "₹" +
+            Number(amount || 0)
+            .toLocaleString(
+                "en-IN",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+    }
+
+
+    // ==========================================
+    // DELETE FEE
+    // ==========================================
+
+    async function deleteFee(id) {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to delete this fee record?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/fees/${id}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Delete failed"
+                );
+
+            }
+
+
+            alert(
+                "Fee record deleted successfully."
+            );
+
+
+            await loadFees();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to delete fee record."
+            );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // START
+    // ==========================================
+
+    loadFees();
+
+</script>
+
+</body>
+
+</html>

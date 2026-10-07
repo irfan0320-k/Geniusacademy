@@ -1,0 +1,11 @@
+com\geniusacademy\controller\AttendanceApiController.class
+com\geniusacademy\GeniusAcademyApplication.class
+com\geniusacademy\StudentRecordsApiController.class
+com\geniusacademy\controller\PerformanceApiController.class
+com\geniusacademy\controller\StudentApiController.class
+com\geniusacademy\controller\FeesApiController.class
+com\geniusacademy\HomeController.class
+com\geniusacademy\controller\LoginApiController.class
+com\geniusacademy\controller\DashboardApiController.class
+com\geniusacademy\controller\TeacherApiController.class
+com\geniusacademy\controller\StudentAttendanceApiController.class

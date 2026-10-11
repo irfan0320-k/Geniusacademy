@@ -15,13 +15,13 @@ import java.util.Map;
 public class AttendanceApiController {
 
     private final String URL =
-            "jdbc:mysql://localhost:3306/genius_academy";
+        System.getenv("SPRING_DATASOURCE_URL");
 
-    private final String USER = "root";
+private final String USER =
+        System.getenv("SPRING_DATASOURCE_USERNAME");
 
-    private final String PASSWORD =
-            "Genius@2026"; // Apna existing MySQL password yahan rakho
-
+private final String PASSWORD =
+        System.getenv("SPRING_DATASOURCE_PASSWORD");
 
     // ==========================================
     // GET ALL ATTENDANCE

@@ -17,25 +17,31 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
+@RequestMapping("/api/students")
 public class StudentApiController {
+    
+private final String URL = System.getenv().getOrDefault(
+        "SPRING_DATASOURCE_URL",
+        "jdbc:mysql://localhost:3306/genius_academy"
+);
 
-    private final String URL =
-        System.getenv("SPRING_DATASOURCE_URL");
+private final String USER = System.getenv().getOrDefault(
+        "SPRING_DATASOURCE_USERNAME",
+        "root"
+);
 
-private final String USER =
-        System.getenv("SPRING_DATASOURCE_USERNAME");
-
-private final String PASSWORD =
-        System.getenv("SPRING_DATASOURCE_PASSWORD");
-
-
+private final String PASSWORD = System.getenv().getOrDefault(
+        "SPRING_DATASOURCE_PASSWORD",
+        ""
+);
     // ==========================================
     // ADD STUDENT
     // ==========================================
 
-    @PostMapping("/api/students")
+    @PostMapping
     public Map<String, Object> addStudent(
             @RequestBody Map<String, Object> student) {
 
@@ -119,7 +125,7 @@ private final String PASSWORD =
     // GET ALL STUDENTS
     // ==========================================
 
-    @GetMapping("/api/students")
+    @GetMapping
     public List<Map<String, Object>> getStudents() {
 
         List<Map<String, Object>> students =
@@ -212,11 +218,17 @@ private final String PASSWORD =
 
         } catch (Exception e) {
 
-            e.printStackTrace();
-        }
+    e.printStackTrace();
 
-        return students;
-    }
+    Map<String, Object> error = new HashMap<>();
+    error.put("error", e.getMessage());
+
+    students.clear();
+    students.add(error);
+}
+
+                return students;
+        }
 
 
     // ==========================================

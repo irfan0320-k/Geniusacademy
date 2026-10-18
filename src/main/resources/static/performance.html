@@ -1,1230 +1,544 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Performance | Genius Academy</title>
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            background: #f5f7fb;
+            color: #202b3c;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+        .sidebar {
+            width: 245px;
+            min-height: 100vh;
+            background: #17243b;
+            color: white;
+            padding: 24px 16px;
+            flex-shrink: 0;
+        }
 
-    <link rel="stylesheet" href="css/style.css">
+        .brand { font-weight: 800; font-size: 19px; }
 
+        .nav-link {
+            color: #cbd5e1;
+            padding: 12px;
+            border-radius: 9px;
+            margin-top: 5px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: #34445f;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 28px;
+        }
+
+        .card-box {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            border: 1px solid #e8edf4;
+            height: 100%;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .muted {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .table th {
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .table td { vertical-align: middle; }
+        .table-wrap { overflow-x: auto; }
+
+        @media (max-width: 768px) {
+            .layout { display: block !important; }
+            .sidebar { width: 100%; min-height: auto; }
+            .main { padding: 16px; }
+        }
+    </style>
 </head>
 
-
 <body>
+<div class="layout d-flex">
 
-<script src="js/app.js"></script>
+    <aside class="sidebar">
+        <div class="mb-4">
+            <img src="/images/logo.png" alt="Genius Academy"
+                 style="width:42px;height:42px;object-fit:contain"
+                 onerror="this.style.display='none'">
+            <div class="brand mt-2">GENIUS ACADEMY</div>
+            <small class="text-secondary">Tuition Management</small>
+        </div>
+
+        <nav class="nav flex-column">
+            <a class="nav-link" href="/dashboard.html"><i class="bi bi-grid me-2"></i>Dashboard</a>
+            <a class="nav-link" href="/students.html"><i class="bi bi-people me-2"></i>Students</a>
+            <a class="nav-link" href="/teachers.html"><i class="bi bi-person-workspace me-2"></i>Teachers</a>
+            <a class="nav-link" href="/attendance.html"><i class="bi bi-calendar-check me-2"></i>Attendance</a>
+            <a class="nav-link" href="/fees.html"><i class="bi bi-currency-rupee me-2"></i>Fees</a>
+            <a class="nav-link active" href="/performance.html"><i class="bi bi-bar-chart me-2"></i>Performance</a>
+            <a class="nav-link" href="/reports.html"><i class="bi bi-file-earmark-text me-2"></i>Reports</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Performance Management</h2>
+                <div class="muted">Track student academic performance</div>
+                <div class="small text-primary mt-1">Passing marks: 7</div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+                <button class="btn btn-outline-secondary" onclick="loadPerformance()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+                <a href="/performance-form.html" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add Performance
+                </a>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="alert alert-danger d-none"></div>
+        <div id="successMessage" class="alert alert-success d-none"></div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-xl-3">
+                <div class="card-box">
+                    <div class="muted">Total Records</div>
+                    <div class="stat-number" id="totalRecords">0</div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="card-box">
+                    <div class="muted">Average Marks</div>
+                    <div class="stat-number" id="averageMarks">0.00</div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="card-box">
+                    <div class="muted">Passed</div>
+                    <div class="stat-number text-success" id="passedRecords">0</div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="card-box">
+                    <div class="muted">Failed</div>
+                    <div class="stat-number text-danger" id="failedRecords">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <div class="d-flex justify-content-between flex-wrap gap-2 mb-3">
+                <div>
+                    <h5 class="fw-bold mb-1">Performance Records</h5>
+                    <div class="muted">Search and filter academic records</div>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary" id="clearFilter">
+                    Clear Filters
+                </button>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <label for="searchInput" class="form-label">Search</label>
+                    <input id="searchInput" class="form-control"
+                           placeholder="Student, subject or exam">
+                </div>
+                <div class="col-md-3">
+                    <label for="studentFilter" class="form-label">Student</label>
+                    <select id="studentFilter" class="form-select">
+                        <option value="">All Students</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="subjectFilter" class="form-label">Subject</label>
+                    <select id="subjectFilter" class="form-select">
+                        <option value="">All Subjects</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="resultFilter" class="form-label">Result</label>
+                    <select id="resultFilter" class="form-select">
+                        <option value="">All Results</option>
+                        <option value="Pass">Pass</option>
+                        <option value="Fail">Fail</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student</th>
+                        <th>Subject</th>
+                        <th>Exam</th>
+                        <th>Marks</th>
+                        <th>Result</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="performanceTableBody">
+                    <tr>
+                        <td colspan="7" class="text-center py-4">Loading records...</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="muted mt-2" id="recordCount"></div>
+        </div>
+
+        <footer class="text-center muted mt-4">
+            Genius Academy · Tuition Management System<br>
+            Developed by <strong>Irfan Hussain</strong>
+        </footer>
+    </main>
+</div>
 
 <script>
-
-    // ==========================================
-    // LAYOUT
-    // ==========================================
-
-    renderLayout("performance", "Performance Management");
-
-
-    // ==========================================
-    // DATA
-    // ==========================================
-
     let students = [];
-
     let performance = [];
-
     let filteredPerformance = [];
 
-
-    // ==========================================
-    // LOAD DATA
-    // ==========================================
-
-    async function loadPerformance() {
-
-        try {
-
-            const [
-                studentsResponse,
-                performanceResponse
-            ] = await Promise.all([
-
-                fetch("/api/students"),
-
-                fetch("/api/performance")
-
-            ]);
-
-
-            if (
-                !studentsResponse.ok ||
-                !performanceResponse.ok
-            ) {
-
-                throw new Error(
-                    "Unable to load performance"
-                );
-
-            }
-
-
-            students =
-                await studentsResponse.json();
-
-            performance =
-                await performanceResponse.json();
-
-            filteredPerformance =
-                [...performance];
-
-
-            createPage();
-
-            renderPerformance();
-
-        }
-
-        catch (error) {
-
-            console.error(error);
-
-            document.getElementById(
-                "pageContent"
-            ).innerHTML = `
-
-                <div class="alert alert-danger">
-
-                    <i class="bi bi-exclamation-triangle"></i>
-
-                    Unable to load performance data.
-
-                    <br>
-
-                    Please make sure Spring Boot
-                    is running.
-
-                </div>
-
-            `;
-
-        }
-
-    }
-
-
-    // ==========================================
-    // CREATE PAGE
-    // ==========================================
-
-    function createPage() {
-
-        document.getElementById(
-            "pageContent"
-        ).innerHTML = `
-
-            <!-- PAGE HEADER -->
-
-            <div class="d-flex
-                        justify-content-between
-                        align-items-center
-                        mb-4
-                        flex-wrap
-                        gap-3">
-
-                <div>
-
-                    <h4 class="mb-1 fw-bold">
-
-                        <i class="bi bi-bar-chart-fill"></i>
-
-                        Performance
-
-                    </h4>
-
-                    <p class="text-muted mb-0">
-
-                        Track student academic performance
-
-                    </p>
-
-                </div>
-
-
-                <a
-                    href="performance-form.html"
-                    class="btn btn-gold">
-
-                    <i class="bi bi-plus-lg"></i>
-
-                    Add Performance
-
-                </a>
-
-            </div>
-
-
-            <!-- SUMMARY CARDS -->
-
-            <div class="row g-3 mb-4">
-
-                <div class="col-md-3">
-
-                    <div class="stat-card">
-
-                        <div class="d-flex
-                                    align-items-center
-                                    gap-3">
-
-                            <div
-                                class="stat-icon icon-blue">
-
-                                <i class="bi bi-clipboard-data"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="text-muted small">
-
-                                    Total Records
-
-                                </div>
-
-                                <h4
-                                    id="totalRecords"
-                                    class="mb-0 fw-bold">
-
-                                    0
-
-                                </h4>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-3">
-
-                    <div class="stat-card">
-
-                        <div class="d-flex
-                                    align-items-center
-                                    gap-3">
-
-                            <div
-                                class="stat-icon icon-green">
-
-                                <i class="bi bi-graph-up-arrow"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="text-muted small">
-
-                                    Average Marks
-
-                                </div>
-
-                                <h4
-                                    id="averageMarks"
-                                    class="mb-0 fw-bold">
-
-                                    0
-
-                                </h4>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-3">
-
-                    <div class="stat-card">
-
-                        <div class="d-flex
-                                    align-items-center
-                                    gap-3">
-
-                            <div
-                                class="stat-icon icon-gold">
-
-                                <i class="bi bi-check-circle"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="text-muted small">
-
-                                    Passed
-
-                                </div>
-
-                                <h4
-                                    id="passedRecords"
-                                    class="mb-0 fw-bold">
-
-                                    0
-
-                                </h4>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-3">
-
-                    <div class="stat-card">
-
-                        <div class="d-flex
-                                    align-items-center
-                                    gap-3">
-
-                            <div
-                                class="stat-icon icon-red">
-
-                                <i class="bi bi-x-circle"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="text-muted small">
-
-                                    Failed
-
-                                </div>
-
-                                <h4
-                                    id="failedRecords"
-                                    class="mb-0 fw-bold">
-
-                                    0
-
-                                </h4>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- PERFORMANCE PANEL -->
-
-            <div class="panel">
-
-                <div class="panel-header">
-
-                    <div>
-
-                        <h5 class="mb-1">
-
-                            <i class="bi bi-list-stars"></i>
-
-                            Performance Records
-
-                        </h5>
-
-                        <small class="text-muted">
-
-                            Search and filter academic records
-
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-                <div class="panel-body">
-
-
-                    <!-- FILTERS -->
-
-                    <div class="row g-3 mb-4">
-
-                        <div class="col-md-4">
-
-                            <label
-                                class="form-label fw-semibold">
-
-                                Student
-
-                            </label>
-
-                            <select
-                                id="studentFilter"
-                                class="form-select">
-
-                                <option value="">
-
-                                    All Students
-
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="col-md-3">
-
-                            <label
-                                class="form-label fw-semibold">
-
-                                Subject
-
-                            </label>
-
-                            <select
-                                id="subjectFilter"
-                                class="form-select">
-
-                                <option value="">
-
-                                    All Subjects
-
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="col-md-3">
-
-                            <label
-                                class="form-label fw-semibold">
-
-                                Result
-
-                            </label>
-
-                            <select
-                                id="resultFilter"
-                                class="form-select">
-
-                                <option value="">
-
-                                    All Results
-
-                                </option>
-
-                                <option value="Pass">
-
-                                    Pass
-
-                                </option>
-
-                                <option value="Fail">
-
-                                    Fail
-
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="col-md-2
-                                    d-flex
-                                    align-items-end">
-
-                            <button
-                                type="button"
-                                id="clearFilter"
-                                class="btn btn-outline-secondary w-100">
-
-                                <i class="bi bi-x-circle"></i>
-
-                                Clear
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- TABLE -->
-
-                    <div class="table-responsive">
-
-                        <table
-                            class="table table-hover align-middle">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>ID</th>
-
-                                    <th>Student</th>
-
-                                    <th>Subject</th>
-
-                                    <th>Exam</th>
-
-                                    <th>Marks</th>
-
-                                    <th>Result</th>
-
-                                    <th>Actions</th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody
-                                id="performanceTableBody">
-
-                                <tr>
-
-                                    <td
-                                        colspan="7"
-                                        class="text-center py-4">
-
-                                        Loading...
-
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        populateStudentFilter();
-
-        populateSubjectFilter();
-
-        setupFilters();
-
-    }
-
-
-    // ==========================================
-    // STUDENT FILTER
-    // ==========================================
-
-    function populateStudentFilter() {
-
-        const select =
-            document.getElementById(
-                "studentFilter"
-            );
-
-
-        students.forEach(student => {
-
-            const id =
-                student.id
-                ??
-                student.studentId;
-
-
-            const name =
-                student.name
-                ??
-                student.studentName
-                ??
-                "Unknown Student";
-
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value = id;
-
-            option.textContent = name;
-
-
-            select.appendChild(option);
-
-        });
-
-    }
-
-
-    // ==========================================
-    // SUBJECT FILTER
-    // ==========================================
-
-    function populateSubjectFilter() {
-
-        const select =
-            document.getElementById(
-                "subjectFilter"
-            );
-
-
-        const subjects =
-            performance
-                .map(record =>
-                    String(
-                        record.subject
-                        ?? ""
-                    )
-                )
-                .filter(subject =>
-                    subject !== ""
-                );
-
-
-        const uniqueSubjects =
-            [...new Set(subjects)]
-            .sort();
-
-
-        uniqueSubjects.forEach(subject => {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-
-            option.value = subject;
-
-            option.textContent = subject;
-
-
-            select.appendChild(option);
-
-        });
-
-    }
-
-
-    // ==========================================
-    // FILTER SETUP
-    // ==========================================
-
-    function setupFilters() {
-
-        document.getElementById(
-            "studentFilter"
-        ).addEventListener(
-            "change",
-            applyFilters
+    // 7 or more marks = Pass; below 7 = Fail.
+    const PASS_MARKS = 7;
+
+    function showMessage(type, message) {
+        const el = document.getElementById(
+            type === "error" ? "errorMessage" : "successMessage"
         );
+        el.textContent = message;
+        el.classList.remove("d-none");
 
-
-        document.getElementById(
-            "subjectFilter"
-        ).addEventListener(
-            "change",
-            applyFilters
+        const other = document.getElementById(
+            type === "error" ? "successMessage" : "errorMessage"
         );
-
-
-        document.getElementById(
-            "resultFilter"
-        ).addEventListener(
-            "change",
-            applyFilters
-        );
-
-
-        document.getElementById(
-            "clearFilter"
-        ).addEventListener(
-            "click",
-            clearFilters
-        );
-
+        other.classList.add("d-none");
     }
 
-
-    // ==========================================
-    // APPLY FILTERS
-    // ==========================================
-
-    function applyFilters() {
-
-        const studentId =
-            document.getElementById(
-                "studentFilter"
-            ).value;
-
-
-        const subject =
-            document.getElementById(
-                "subjectFilter"
-            ).value;
-
-
-        const result =
-            document.getElementById(
-                "resultFilter"
-            ).value;
-
-
-        filteredPerformance =
-            performance.filter(record => {
-
-                const recordStudentId =
-                    record.studentId
-                    ??
-                    record.student_id;
-
-
-                const recordSubject =
-                    String(
-                        record.subject
-                        ?? ""
-                    );
-
-
-                const marks =
-                    Number(
-                        record.marks
-                        ?? 0
-                    );
-
-
-                const recordResult =
-                    marks >= 40
-                    ? "Pass"
-                    : "Fail";
-
-
-                const matchesStudent =
-                    !studentId
-                    ||
-                    Number(recordStudentId)
-                    === Number(studentId);
-
-
-                const matchesSubject =
-                    !subject
-                    ||
-                    recordSubject === subject;
-
-
-                const matchesResult =
-                    !result
-                    ||
-                    recordResult === result;
-
-
-                return (
-                    matchesStudent
-                    &&
-                    matchesSubject
-                    &&
-                    matchesResult
-                );
-
-            });
-
-
-        renderPerformance();
-
+    function hideMessages() {
+        document.getElementById("errorMessage").classList.add("d-none");
+        document.getElementById("successMessage").classList.add("d-none");
     }
 
-
-    // ==========================================
-    // CLEAR FILTERS
-    // ==========================================
-
-    function clearFilters() {
-
-        document.getElementById(
-            "studentFilter"
-        ).value = "";
-
-
-        document.getElementById(
-            "subjectFilter"
-        ).value = "";
-
-
-        document.getElementById(
-            "resultFilter"
-        ).value = "";
-
-
-        filteredPerformance =
-            [...performance];
-
-
-        renderPerformance();
-
+    function studentIdOf(student) {
+        return student.id ?? student.studentId ?? student.student_id;
     }
 
-
-    // ==========================================
-    // STUDENT NAME
-    // ==========================================
+    function studentNameOf(student) {
+        return student.name ??
+            student.studentName ??
+            student.student_name ??
+            student.fullName ??
+            student.full_name ??
+            "";
+    }
 
     function getStudentName(studentId) {
-
-        const student =
-            students.find(
-                student =>
-                    Number(
-                        student.id
-                        ??
-                        student.studentId
-                    )
-                    === Number(studentId)
-            );
-
-
-        if (!student) {
-
-            return "Unknown Student";
-
-        }
-
-
-        return (
-            student.name
-            ??
-            student.studentName
-            ??
-            "Unknown Student"
+        const student = students.find(s =>
+            Number(studentIdOf(s)) === Number(studentId)
         );
 
+        return student
+            ? (studentNameOf(student) || `Student #${studentId}`)
+            : `Student #${studentId ?? "Unknown"}`;
     }
 
-
-    // ==========================================
-    // RESULT BADGE
-    // ==========================================
-
-    function resultBadge(marks) {
-
-        const value =
-            Number(marks || 0);
-
-
-        if (value >= 40) {
-
-            return `
-
-                <span
-                    class="badge badge-present">
-
-                    <i class="bi bi-check-circle"></i>
-
-                    Pass
-
-                </span>
-
-            `;
-
-        }
-
-
-        return `
-
-            <span
-                class="badge badge-absent">
-
-                <i class="bi bi-x-circle"></i>
-
-                Fail
-
-            </span>
-
-        `;
-
+    function recordIdOf(record) {
+        return record.id ?? record.performanceId ?? record.performance_id;
     }
 
+    function recordStudentIdOf(record) {
+        return record.studentId ?? record.student_id;
+    }
 
-    // ==========================================
-    // RENDER PERFORMANCE
-    // ==========================================
+    function examNameOf(record) {
+        return record.examName ?? record.exam ?? record.exam_name ?? "-";
+    }
 
-    function renderPerformance() {
+    function resultOf(marks) {
+        return Number(marks || 0) >= PASS_MARKS ? "Pass" : "Fail";
+    }
 
-        const tbody =
-            document.getElementById(
-                "performanceTableBody"
-            );
+    async function loadPerformance() {
+        hideMessages();
 
-
-        if (!tbody) {
-            return;
-        }
-
-
-        // TOTAL
-
-        const total =
-            filteredPerformance.length;
-
-
-        // AVERAGE
-
-        const totalMarks =
-            filteredPerformance.reduce(
-                (sum, record) =>
-                    sum +
-                    Number(
-                        record.marks ?? 0
-                    ),
-                0
-            );
-
-
-        const average =
-            total > 0
-            ? totalMarks / total
-            : 0;
-
-
-        // PASSED
-
-        const passed =
-            filteredPerformance.filter(
-                record =>
-                    Number(
-                        record.marks ?? 0
-                    ) >= 40
-            ).length;
-
-
-        // FAILED
-
-        const failed =
-            filteredPerformance.filter(
-                record =>
-                    Number(
-                        record.marks ?? 0
-                    ) < 40
-            ).length;
-
-
-        document.getElementById(
-            "totalRecords"
-        ).textContent = total;
-
-
-        document.getElementById(
-            "averageMarks"
-        ).textContent =
-            average.toFixed(2);
-
-
-        document.getElementById(
-            "passedRecords"
-        ).textContent = passed;
-
-
-        document.getElementById(
-            "failedRecords"
-        ).textContent = failed;
-
-
-        // EMPTY
-
-        if (total === 0) {
-
-            tbody.innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="7"
-                        class="text-center py-5">
-
-                        <i
-                            class="bi bi-bar-chart
-                                   fs-2 text-muted">
-                        </i>
-
-                        <div
-                            class="mt-2 text-muted">
-
-                            No performance records found.
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        // TABLE
-
+        const tbody = document.getElementById("performanceTableBody");
         tbody.innerHTML =
-            filteredPerformance
-            .map(record => {
-
-                const id =
-                    record.id
-                    ??
-                    record.performanceId
-                    ??
-                    record.performance_id;
-
-
-                const studentId =
-                    record.studentId
-                    ??
-                    record.student_id;
-
-
-                const subject =
-                    record.subject
-                    ??
-                    "-";
-
-
-                const exam =
-                    record.examName
-                    ??
-                    record.exam
-                    ??
-                    record.exam_name
-                    ??
-                    "-";
-
-
-                const marks =
-                    Number(
-                        record.marks ?? 0
-                    );
-
-
-                return `
-
-                    <tr>
-
-                        <td>
-
-                            <strong>
-                                ${id}
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-
-                                ${getStudentName(
-                                    studentId
-                                )}
-
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-
-                            <span
-                                class="badge bg-light
-                                       text-dark border">
-
-                                ${subject}
-
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            ${exam}
-
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-
-                                ${marks}
-
-                            </strong>
-
-                            / 100
-
-                        </td>
-
-
-                        <td>
-
-                            ${resultBadge(
-                                marks
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            <div
-                                class="d-flex
-                                       gap-2
-                                       flex-wrap">
-
-                                <a
-                                    href="performance-form.html?id=${id}"
-                                    class="btn btn-sm
-                                           btn-outline-secondary">
-
-                                    <i class="bi bi-pencil"></i>
-
-                                    Edit
-
-                                </a>
-
-
-                                <button
-                                    type="button"
-                                    class="btn btn-sm
-                                           btn-outline-danger"
-                                    onclick="deletePerformance(${id})">
-
-                                    <i class="bi bi-trash"></i>
-
-                                    Delete
-
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            })
-            .join("");
-
-    }
-
-
-    // ==========================================
-    // DELETE PERFORMANCE
-    // ==========================================
-
-    async function deletePerformance(id) {
-
-        const confirmed =
-            confirm(
-                "Are you sure you want to delete this performance record?"
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
+            `<tr><td colspan="7" class="text-center py-4">Loading records...</td></tr>`;
 
         try {
+            const responses = await Promise.all([
+                fetch("/api/performance"),
+                fetch("/api/students")
+            ]);
 
-            const response =
-                await fetch(
-                    `/api/performance/${id}`,
-                    {
-                        method: "DELETE"
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Delete failed"
-                );
-
+            if (!responses[0].ok) {
+                throw new Error("Unable to load performance records.");
             }
 
+            performance = await responses[0].json();
 
-            alert(
-                "Performance record deleted successfully."
-            );
+            if (!Array.isArray(performance)) {
+                throw new Error("Unexpected performance API response.");
+            }
 
+            if (responses[1].ok) {
+                const studentData = await responses[1].json();
+                students = Array.isArray(studentData) ? studentData : [];
+            } else {
+                students = [];
+            }
 
-            await loadPerformance();
-
+            populateStudentFilter();
+            populateSubjectFilter();
+            applyFilters();
+        } catch (error) {
+            console.error("Loading performance failed:", error);
+            tbody.innerHTML =
+                `<tr><td colspan="7" class="text-center text-danger py-4">
+                Could not load records. Check the API and database.
+                </td></tr>`;
+            showMessage("error", error.message || "Unable to load records.");
         }
-
-        catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Unable to delete performance record."
-            );
-
-        }
-
     }
 
+    function populateStudentFilter() {
+        const select = document.getElementById("studentFilter");
+        const currentValue = select.value;
 
-    // ==========================================
-    // START
-    // ==========================================
+        select.innerHTML = `<option value="">All Students</option>`;
+
+        const unique = new Map();
+
+        students.forEach(student => {
+            const id = studentIdOf(student);
+            const name = studentNameOf(student);
+
+            if (id != null) {
+                unique.set(String(id), name || `Student #${id}`);
+            }
+        });
+
+        performance.forEach(record => {
+            const id = recordStudentIdOf(record);
+            if (id != null && !unique.has(String(id))) {
+                unique.set(String(id), `Student #${id}`);
+            }
+        });
+
+        [...unique.entries()]
+            .sort((a, b) => a[1].localeCompare(b[1]))
+            .forEach(([id, name]) => {
+                const option = document.createElement("option");
+                option.value = id;
+                option.textContent = name;
+                select.appendChild(option);
+            });
+
+        select.value = currentValue;
+    }
+
+    function populateSubjectFilter() {
+        const select = document.getElementById("subjectFilter");
+        const currentValue = select.value;
+
+        select.innerHTML = `<option value="">All Subjects</option>`;
+
+        const subjects = [...new Set(
+            performance
+                .map(record => String(record.subject ?? "").trim())
+                .filter(Boolean)
+        )].sort();
+
+        subjects.forEach(subject => {
+            const option = document.createElement("option");
+            option.value = subject;
+            option.textContent = subject;
+            select.appendChild(option);
+        });
+
+        select.value = currentValue;
+    }
+
+    function applyFilters() {
+        const studentId = document.getElementById("studentFilter").value;
+        const subject = document.getElementById("subjectFilter").value;
+        const result = document.getElementById("resultFilter").value;
+        const search = document.getElementById("searchInput")
+            .value.trim().toLowerCase();
+
+        filteredPerformance = performance.filter(record => {
+            const id = recordStudentIdOf(record);
+            const marks = Number(record.marks ?? 0);
+            const name = getStudentName(id).toLowerCase();
+
+            const matchesStudent = !studentId ||
+                Number(id) === Number(studentId);
+
+            const matchesSubject = !subject ||
+                String(record.subject ?? "") === subject;
+
+            const matchesResult = !result || resultOf(marks) === result;
+
+            const matchesSearch = !search ||
+                name.includes(search) ||
+                String(record.subject ?? "").toLowerCase().includes(search) ||
+                String(examNameOf(record)).toLowerCase().includes(search);
+
+            return matchesStudent && matchesSubject &&
+                matchesResult && matchesSearch;
+        });
+
+        renderPerformance();
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[char]);
+    }
+
+    function resultBadge(marks) {
+        return resultOf(marks) === "Pass"
+            ? `<span class="badge text-bg-success">Pass</span>`
+            : `<span class="badge text-bg-danger">Fail</span>`;
+    }
+
+    function renderPerformance() {
+        const tbody = document.getElementById("performanceTableBody");
+        const total = filteredPerformance.length;
+
+        const totalMarks = filteredPerformance.reduce(
+            (sum, record) => sum + Number(record.marks ?? 0), 0
+        );
+
+        const average = total ? totalMarks / total : 0;
+        const passed = filteredPerformance.filter(
+            record => resultOf(record.marks) === "Pass"
+        ).length;
+        const failed = total - passed;
+
+        document.getElementById("totalRecords").textContent = total;
+        document.getElementById("averageMarks").textContent = average.toFixed(2);
+        document.getElementById("passedRecords").textContent = passed;
+        document.getElementById("failedRecords").textContent = failed;
+        document.getElementById("recordCount").textContent =
+            `Showing ${total} of ${performance.length} records`;
+
+        if (!total) {
+            tbody.innerHTML = `
+                <tr><td colspan="7" class="text-center text-muted py-5">
+                    No performance records found.
+                </td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = filteredPerformance.map(record => {
+            const id = recordIdOf(record);
+            const studentId = recordStudentIdOf(record);
+            const studentName = getStudentName(studentId);
+            const subject = record.subject ?? "-";
+            const exam = examNameOf(record);
+            const marks = Number(record.marks ?? 0);
+
+            return `
+                <tr>
+                    <td><strong>${escapeHtml(id)}</strong></td>
+                    <td><strong>${escapeHtml(studentName)}</strong></td>
+                    <td>${escapeHtml(subject)}</td>
+                    <td>${escapeHtml(exam)}</td>
+                    <td><strong>${escapeHtml(marks)}</strong></td>
+                    <td>${resultBadge(marks)}</td>
+                    <td>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="/performance-form.html?id=${encodeURIComponent(id)}">
+                               <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <button class="btn btn-sm btn-outline-danger"
+                                    onclick="deletePerformance(${Number(id)})">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+        }).join("");
+    }
+
+    async function deletePerformance(id) {
+        if (!confirm("Are you sure you want to delete this performance record?")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `/api/performance/${encodeURIComponent(id)}`,
+                { method: "DELETE" }
+            );
+
+            if (!response.ok) {
+                throw new Error("Delete failed. Please check the API.");
+            }
+
+            showMessage("success", "Performance record deleted successfully.");
+            await loadPerformance();
+        } catch (error) {
+            console.error(error);
+            showMessage("error", error.message || "Unable to delete record.");
+        }
+    }
+
+    document.getElementById("studentFilter")
+        .addEventListener("change", applyFilters);
+    document.getElementById("subjectFilter")
+        .addEventListener("change", applyFilters);
+    document.getElementById("resultFilter")
+        .addEventListener("change", applyFilters);
+    document.getElementById("searchInput")
+        .addEventListener("input", applyFilters);
+
+    document.getElementById("clearFilter").addEventListener("click", () => {
+        document.getElementById("studentFilter").value = "";
+        document.getElementById("subjectFilter").value = "";
+        document.getElementById("resultFilter").value = "";
+        document.getElementById("searchInput").value = "";
+        applyFilters();
+    });
 
     loadPerformance();
-
 </script>
-
 </body>
-
 </html>

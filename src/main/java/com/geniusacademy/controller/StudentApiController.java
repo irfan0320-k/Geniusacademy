@@ -1,7 +1,6 @@
 package com.geniusacademy.controller;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Date;
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.sql.DataSource;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,20 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/students")
 public class StudentApiController {
     
-private final String URL = System.getenv().getOrDefault(
-        "SPRING_DATASOURCE_URL",
-        "jdbc:mysql://localhost:3306/genius_academy"
-);
+private final DataSource dataSource;
 
-private final String USER = System.getenv().getOrDefault(
-        "SPRING_DATASOURCE_USERNAME",
-        "root"
-);
-
-private final String PASSWORD = System.getenv().getOrDefault(
-        "SPRING_DATASOURCE_PASSWORD",
-        ""
-);
+public StudentApiController(DataSource dataSource) {
+    this.dataSource = dataSource;
+}
     // ==========================================
     // ADD STUDENT
     // ==========================================
@@ -48,8 +38,7 @@ private final String PASSWORD = System.getenv().getOrDefault(
         Map<String, Object> response = new HashMap<>();
 
         try {
-            Connection connection =
-                    DriverManager.getConnection(URL, USER, PASSWORD);
+            Connection connection = dataSource.getConnection();
 
             String sql =
                     "INSERT INTO students " +
@@ -133,12 +122,7 @@ private final String PASSWORD = System.getenv().getOrDefault(
 
         try {
 
-            Connection connection =
-                    DriverManager.getConnection(
-                            URL,
-                            USER,
-                            PASSWORD
-                    );
+            Connection connection = dataSource.getConnection();
 
             String sql =
                     "SELECT student_id, student_name, " +
@@ -244,12 +228,7 @@ private final String PASSWORD = System.getenv().getOrDefault(
 
         try {
 
-            Connection connection =
-                    DriverManager.getConnection(
-                            URL,
-                            USER,
-                            PASSWORD
-                    );
+            Connection connection = dataSource.getConnection();
 
             String sql =
                     "SELECT student_id, student_name, " +
@@ -327,12 +306,8 @@ private final String PASSWORD = System.getenv().getOrDefault(
 
         try {
 
-            Connection connection =
-                    DriverManager.getConnection(
-                            URL,
-                            USER,
-                            PASSWORD
-                    );
+            Connection connection = dataSource.getConnection();
+                    
 
             String sql =
                     "UPDATE students SET " +
@@ -439,12 +414,7 @@ private final String PASSWORD = System.getenv().getOrDefault(
 
         try {
 
-            Connection connection =
-                    DriverManager.getConnection(
-                            URL,
-                            USER,
-                            PASSWORD
-                    );
+        Connection connection = dataSource.getConnection();
 
             String sql =
                     "DELETE FROM students " +

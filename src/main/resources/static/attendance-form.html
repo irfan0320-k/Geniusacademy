@@ -1,76 +1,204 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance | Genius Academy</title>
+    <title>Mark Attendance | Genius Academy</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-light">
+
+<body>
+<script src="js/app.js"></script>
+
 <div class="container py-5">
-    <div class="card shadow-sm mx-auto" style="max-width:600px">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Genius Academy — Attendance</h3>
+    <div class="card shadow-sm mx-auto" style="max-width: 650px;">
+        <div class="card-header bg-primary text-white p-4">
+            <h3 class="mb-1"><i class="bi bi-calendar-check"></i> Genius Academy</h3>
+            <p class="mb-0">Mark Student Attendance</p>
         </div>
-        <div class="card-body">
-            <div id="message"></div>
+
+        <div class="card-body p-4">
+            <div id="message" role="status"></div>
+
             <form id="attendanceForm">
                 <div class="mb-3">
-                    <label class="form-label">Student ID</label>
-                    <input type="number" id="studentId" class="form-control" required min="1">
+                    <label for="studentId" class="form-label fw-semibold">Select Student</label>
+                    <select id="studentId" class="form-select" required>
+                        <option value="">Loading students...</option>
+                    </select>
                 </div>
+
                 <div class="mb-3">
-                    <label class="form-label">Attendance Date</label>
+                    <label for="attendanceDate" class="form-label fw-semibold">Attendance Date</label>
                     <input type="date" id="attendanceDate" class="form-control" required>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Status</label>
+
+                <div class="mb-4">
+                    <label for="status" class="form-label fw-semibold">Attendance Status</label>
                     <select id="status" class="form-select" required>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
+                        <option value="Late">Late</option>
                     </select>
                 </div>
-                <button class="btn btn-primary" type="submit">Save Attendance</button>
-                <a href="/attendance.html" class="btn btn-secondary">Back</a>
+
+                <button id="saveButton" type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Save Attendance
+                </button>
+
+                <a href="attendance.html" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
             </form>
         </div>
     </div>
 </div>
+
 <script>
-document.getElementById("attendanceDate").value =
-    new Date().toLocaleDateString("en-CA");
+const studentSelect = document.getElementById("studentId");
+const dateInput = document.getElementById("attendanceDate");
+const statusSelect = document.getElementById("status");
+const form = document.getElementById("attendanceForm");
+const message = document.getElementById("message");
+const saveButton = document.getElementById("saveButton");
 
-document.getElementById("attendanceForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
+function getLocalDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
 
-    const message = document.getElementById("message");
-    const data = {
-        studentId: Number(document.getElementById("studentId").value),
-        attendanceDate: document.getElementById("attendanceDate").value,
-        status: document.getElementById("status").value
+dateInput.value = getLocalDate();
+
+function showMessage(text, type) {
+    message.textContent = "";
+    const alert = document.createElement("div");
+    alert.className = `alert alert-${type}`;
+    alert.textContent = text;
+    message.appendChild(alert);
+}
+
+async function loadStudents() {
+    try {
+        const response = await fetch("/api/students");
+
+        if (!response.ok) {
+            throw new Error("Could not load students.");
+        }
+
+        const data = await response.json();
+
+        studentSelect.innerHTML = '<option value="">Select a student</option>';
+
+        data.forEach(student => {
+            const id = student.id ?? student.studentId;
+            const name = student.name ?? student.studentName ?? "Unknown Student";
+            const className = student.className ?? student.standard ?? "";
+
+            if (id == null) return;
+
+            const option = document.createElement("option");
+            option.value = id;
+            option.textContent = className
+                ? `${name} — Class ${className}`
+                : name;
+
+            studentSelect.appendChild(option);
+        });
+
+        if (studentSelect.options.length === 1) {
+            showMessage("No students found. Add a student first.", "warning");
+        }
+    } catch (error) {
+        console.error("Student loading error:", error);
+        studentSelect.innerHTML = '<option value="">Unable to load students</option>';
+        showMessage("Students could not be loaded. Check the server and try again.", "danger");
+    }
+}
+
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+    message.innerHTML = "";
+
+    const studentId = studentSelect.value;
+    const date = dateInput.value;
+    const status = statusSelect.value;
+
+    if (!studentId || !date || !status) {
+        showMessage("Please complete all fields.", "warning");
+        return;
+    }
+
+    // These field names match AttendanceApiController.java
+    const payload = {
+        studentId: Number(studentId),
+        date: date,
+        status: status
     };
+
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving...";
 
     try {
         const response = await fetch("/api/attendance", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(data)
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
-        const result = await response.text();
-        if (!response.ok) throw new Error(result || "Request failed");
+        const result = await response.json();
 
-        message.innerHTML = '<div class="alert alert-success">Attendance saved successfully!</div>';
-        this.reset();
-        document.getElementById("attendanceDate").value =
-            new Date().toLocaleDateString("en-CA");
+        if (!response.ok || result.success !== true) {
+            throw new Error(result.message || "Attendance could not be saved.");
+        }
+
+        showMessage("Attendance saved successfully!", "success");
+
+        // Reload the list to confirm the record was stored.
+        const verifyResponse = await fetch("/api/attendance");
+
+        if (!verifyResponse.ok) {
+            throw new Error("Saved, but could not refresh attendance records.");
+        }
+
+        const records = await verifyResponse.json();
+        const saved = records.some(record =>
+            Number(record.studentId ?? record.student_id) === Number(studentId) &&
+            String(record.date ?? record.attendanceDate ?? "").startsWith(date) &&
+            String(record.status ?? "").toLowerCase() === status.toLowerCase()
+        );
+
+        if (!saved) {
+            showMessage(
+                "The server reported success, but the record was not found in the attendance list. Check the database connection.",
+                "warning"
+            );
+            return;
+        }
+
+        form.reset();
+        dateInput.value = getLocalDate();
+        statusSelect.value = "Present";
+
     } catch (error) {
-        message.innerHTML = '<div class="alert alert-danger">Could not save attendance. Check API fields and server logs.</div>';
-        console.error(error);
+        console.error("Attendance save error:", error);
+        showMessage(error.message || "Unable to save attendance. Check the server logs.", "danger");
+    } finally {
+        saveButton.disabled = false;
+        saveButton.innerHTML = '<i class="bi bi-check-circle"></i> Save Attendance';
     }
 });
+
+loadStudents();
 </script>
 </body>
 </html>
-```

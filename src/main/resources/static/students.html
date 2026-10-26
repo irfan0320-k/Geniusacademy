@@ -1,2275 +1,1040 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Students | Genius Academy</title>
 
-
     <!-- Bootstrap -->
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-        rel="stylesheet"
-    >
-
-
-    <!-- Main CSS -->
-
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
-
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-
-        /* =====================================================
-           STUDENT PAGE
-        ====================================================== */
-
-        .students-page {
-            width: 100%;
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #eef2ff;
+            --background: #f5f7fb;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e8edf4;
         }
 
-
-        /* =====================================================
-           PAGE TOP
-        ====================================================== */
-
-        .student-page-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 20px;
+        * {
+            box-sizing: border-box;
         }
 
-        .student-page-title h2 {
+        body {
             margin: 0;
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--ga-navy);
+            background: var(--background);
+            color: var(--text);
+            font-family: "Plus Jakarta Sans", sans-serif;
+            font-size: 14px;
         }
 
-        .student-page-title p {
-            margin: 5px 0 0;
-            color: var(--ga-muted);
-            font-size: 13px;
-        }
-
-
-        /* =====================================================
-           REFRESH BUTTON
-        ====================================================== */
-
-        .refresh-btn {
-            border: 1px solid var(--ga-border);
+        .navbar {
             background: #fff;
-            color: var(--ga-navy);
-            font-weight: 700;
-            border-radius: 9px;
-            padding: 9px 14px;
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0;
         }
 
-        .refresh-btn:hover {
-            background: #f6f8fb;
-        }
-
-
-        /* =====================================================
-           STAT CARDS
-        ====================================================== */
-
-        .student-stat-card {
-            background: #fff;
-            border: 1px solid var(--ga-border);
-            border-radius: 14px;
-            padding: 17px;
-            height: 100%;
+        .brand {
             display: flex;
             align-items: center;
-            gap: 13px;
-        }
-
-        .student-stat-icon {
-            width: 44px;
-            height: 44px;
-            min-width: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--ga-gold-soft);
-            color: var(--ga-gold);
+            gap: 10px;
+            color: var(--text);
             font-size: 19px;
+            font-weight: 800;
+            text-decoration: none;
         }
 
-        .student-stat-label {
-            font-size: 11px;
-            color: var(--ga-muted);
-            margin-bottom: 3px;
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 22px;
         }
 
-        .student-stat-value {
+        .page-container {
+            max-width: 1450px;
+            margin: auto;
+            padding: 28px 22px;
+        }
+
+        .page-title {
+            font-size: clamp(24px, 3vw, 32px);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .panel,
+        .stat-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.025);
+        }
+
+        .stat-card {
+            padding: 20px;
+            height: 100%;
+        }
+
+        .stat-icon {
+            display: grid;
+            place-items: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 13px;
+            background: var(--primary-light);
+            color: var(--primary);
             font-size: 21px;
+        }
+
+        .stat-number {
+            margin-top: 16px;
+            font-size: 29px;
             font-weight: 800;
-            color: var(--ga-navy);
         }
 
-
-        /* =====================================================
-           FILTER PANEL
-        ====================================================== */
-
-        .student-filter-panel {
-            background: #fff;
-            border: 1px solid var(--ga-border);
-            border-radius: 14px;
-            margin-top: 20px;
-            padding: 18px;
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
         }
 
-        .filter-title {
-            font-size: 13px;
-            font-weight: 800;
-            color: var(--ga-navy);
-            margin-bottom: 12px;
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .student-filter-panel .form-control,
-        .student-filter-panel .form-select {
+        .panel-body {
+            padding: 20px;
+        }
+
+        .form-control,
+        .form-select {
             min-height: 43px;
-            border-color: var(--ga-border);
+            border-color: #e2e8f0;
+            border-radius: 10px;
             font-size: 13px;
-            border-radius: 9px;
         }
 
-        .student-filter-panel .form-control:focus,
-        .student-filter-panel .form-select:focus {
-            border-color: var(--ga-gold);
-            box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.10);
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
-
-        /* =====================================================
-           DESKTOP TABLE
-        ====================================================== */
-
-        .student-table-panel {
-            background: #fff;
-            border: 1px solid var(--ga-border);
-            border-radius: 14px;
-            margin-top: 20px;
-            overflow: hidden;
+        .btn {
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 15px;
         }
 
-        .student-table-header {
-            padding: 17px 18px;
-            border-bottom: 1px solid var(--ga-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
         }
 
-        .student-table-header h3 {
+        .btn-primary:hover {
+            background: #4338ca;
+            border-color: #4338ca;
+        }
+
+        .table {
             margin: 0;
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--ga-navy);
+            vertical-align: middle;
         }
 
-        .student-table-header span {
-            font-size: 11px;
-            color: var(--ga-muted);
-        }
-
-        .students-table {
-            margin: 0;
-        }
-
-        .students-table thead th {
+        .table thead th {
             background: #f8fafc;
             color: #64748b;
             font-size: 11px;
             font-weight: 800;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
-            letter-spacing: .3px;
-            padding: 13px 14px;
+            padding: 15px;
             white-space: nowrap;
-            border-bottom: 1px solid var(--ga-border);
         }
 
-        .students-table tbody td {
-            padding: 13px 14px;
-            font-size: 12px;
-            vertical-align: middle;
-            border-bottom: 1px solid #edf1f5;
+        .table tbody td {
+            padding: 15px;
+            border-color: #f0f2f6;
         }
-
-        .students-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .students-table tbody tr:hover {
-            background: #fbfcfe;
-        }
-
-
-        /* =====================================================
-           STUDENT AVATAR
-        ====================================================== */
 
         .student-avatar {
-            width: 38px;
-            height: 38px;
-            min-width: 38px;
-            border-radius: 50%;
-            background: #eaf0f7;
-            color: var(--ga-navy);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
             font-weight: 800;
+            flex-shrink: 0;
         }
 
-        .student-name-cell {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .student-name {
+            font-weight: 700;
+            color: var(--text);
         }
 
-        .student-name-main {
-            font-weight: 800;
-            color: var(--ga-navy);
-            font-size: 12px;
-        }
-
-        .student-id-small {
-            color: var(--ga-muted);
-            font-size: 10px;
-            margin-top: 2px;
-        }
-
-
-        /* =====================================================
-           STATUS
-        ====================================================== */
-
-        .student-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 9px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .student-status.active {
-            color: #18794e;
-            background: #e8f7ef;
-        }
-
-        .student-status.inactive {
-            color: #a33a3a;
-            background: #fdecec;
-        }
-
-        .student-status.other {
-            color: #806718;
-            background: #fff7da;
-        }
-
-
-        /* =====================================================
-           ACTION BUTTONS
-        ====================================================== */
-
-        .student-actions {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .student-action-btn {
-            width: 32px;
-            height: 32px;
+        .badge-class {
+            background: #eef2ff;
+            color: #4338ca;
             border-radius: 7px;
-            border: 1px solid var(--ga-border);
-            background: #fff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            font-size: 13px;
-        }
-
-        .student-action-btn.view {
-            color: #2d7dd2;
-        }
-
-        .student-action-btn.card {
-            color: #b18a15;
-        }
-
-        .student-action-btn.edit {
-            color: #198754;
-        }
-
-        .student-action-btn.delete {
-            color: #d64545;
-        }
-
-        .student-action-btn:hover {
-            background: #f7f9fc;
-        }
-
-
-        /* =====================================================
-           MOBILE STUDENT CARDS
-        ====================================================== */
-
-        .mobile-student-list {
-            display: none;
-        }
-
-        .mobile-student-card {
-            background: #fff;
-            border: 1px solid var(--ga-border);
-            border-radius: 14px;
-            padding: 15px;
-            margin-bottom: 12px;
-        }
-
-        .mobile-student-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .mobile-student-name-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-        }
-
-        .mobile-student-name {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--ga-navy);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .mobile-student-id {
-            font-size: 10px;
-            color: var(--ga-muted);
-            margin-top: 3px;
-        }
-
-        .mobile-details {
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px solid #edf1f5;
-        }
-
-        .mobile-detail-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            min-height: 34px;
-        }
-
-        .mobile-detail-label {
-            color: var(--ga-muted);
-            font-size: 10px;
-        }
-
-        .mobile-detail-value {
-            color: var(--ga-navy);
+            padding: 6px 9px;
             font-size: 11px;
             font-weight: 700;
-            text-align: right;
         }
 
-        .mobile-phone-link {
-            color: #2d7dd2;
-            text-decoration: none;
-            font-weight: 800;
-        }
-
-        .mobile-actions {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 7px;
-            margin-top: 13px;
-        }
-
-        .mobile-action {
-            min-height: 38px;
-            border: 1px solid var(--ga-border);
-            border-radius: 8px;
-            background: #fff;
+        .action-buttons {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            gap: 5px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            display: inline-grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #fff;
+            color: #475569;
             text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
         }
 
-        .mobile-action.view {
-            color: #2d7dd2;
+        .action-btn:hover {
+            background: #f1f5f9;
         }
 
-        .mobile-action.card {
-            color: #b18a15;
+        .action-btn.delete {
+            color: #dc2626;
         }
 
-        .mobile-action.edit {
-            color: #198754;
+        .action-btn.delete:hover {
+            background: #fef2f2;
+            border-color: #fecaca;
         }
 
-        .mobile-action.delete {
-            color: #d64545;
+        .mobile-student {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
         }
-
-
-        /* =====================================================
-           EMPTY STATE
-        ====================================================== */
 
         .empty-state {
-            padding: 45px 20px;
+            padding: 55px 20px;
             text-align: center;
-            color: var(--ga-muted);
+            color: var(--muted);
         }
 
         .empty-state i {
-            font-size: 38px;
-            color: #c6d0dc;
-            margin-bottom: 10px;
+            font-size: 42px;
+            color: #94a3b8;
         }
 
-        .empty-state h4 {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--ga-navy);
-        }
-
-        .empty-state p {
-            font-size: 12px;
-            margin: 0;
-        }
-
-
-        /* =====================================================
-           LOADING
-        ====================================================== */
-
-        .students-loading {
-            padding: 40px 20px;
+        .loading {
+            padding: 40px 15px;
             text-align: center;
-            color: var(--ga-muted);
+            color: var(--muted);
         }
 
-        .students-loading .spinner-border {
-            width: 25px;
-            height: 25px;
-            margin-bottom: 10px;
-            color: var(--ga-gold);
+        .footer {
+            padding: 22px 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
         }
 
-
-        /* =====================================================
-           MOBILE
-        ====================================================== */
-
-        @media (max-width: 767.98px) {
-
-            .student-page-top {
-                align-items: flex-start;
+        @media (max-width: 767px) {
+            .page-container {
+                padding: 20px 12px;
             }
 
-            .student-page-title h2 {
-                font-size: 20px;
+            .stat-card {
+                padding: 15px;
             }
 
-            .student-page-title p {
-                font-size: 11px;
+            .stat-number {
+                font-size: 24px;
             }
 
-            .refresh-btn {
-                width: 42px;
-                height: 42px;
-                padding: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+            .panel-header,
+            .panel-body {
+                padding: 15px;
             }
-
-            .refresh-btn .refresh-text {
-                display: none;
-            }
-
-            .student-stat-card {
-                padding: 13px;
-                border-radius: 12px;
-            }
-
-            .student-stat-icon {
-                width: 39px;
-                height: 39px;
-                min-width: 39px;
-                border-radius: 10px;
-                font-size: 16px;
-            }
-
-            .student-stat-value {
-                font-size: 18px;
-            }
-
-            .student-stat-label {
-                font-size: 10px;
-            }
-
-            .student-filter-panel {
-                padding: 14px;
-                border-radius: 12px;
-            }
-
-            .student-filter-panel .form-control,
-            .student-filter-panel .form-select {
-                min-height: 45px;
-            }
-
-            .student-table-panel {
-                background: transparent;
-                border: none;
-                margin-top: 16px;
-                overflow: visible;
-            }
-
-            .student-table-header {
-                background: #fff;
-                border: 1px solid var(--ga-border);
-                border-radius: 12px;
-                padding: 13px;
-                margin-bottom: 12px;
-            }
-
-            .desktop-student-table {
-                display: none;
-            }
-
-            .mobile-student-list {
-                display: block;
-            }
-
         }
-
-
-        /* =====================================================
-           SMALL MOBILE
-        ====================================================== */
-
-        @media (max-width: 400px) {
-
-            .mobile-student-card {
-                padding: 13px;
-            }
-
-            .mobile-student-name {
-                font-size: 13px;
-            }
-
-            .mobile-actions {
-                gap: 5px;
-            }
-
-            .mobile-action {
-                font-size: 11px;
-            }
-
-        }
-
     </style>
-
 </head>
-
 
 <body>
 
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container-fluid px-3 px-lg-4">
+        <a class="brand" href="dashboard.html">
+            <span class="brand-icon">
+                <i class="bi bi-mortarboard-fill"></i>
+            </span>
+            <span>
+                Genius Academy
+                <small class="d-block muted" style="font-size: 10px; font-weight: 600;">
+                    STUDENT MANAGEMENT
+                </small>
+            </span>
+        </a>
 
-<script src="js/app.js"></script>
+        <div class="d-flex align-items-center gap-2">
+            <a href="dashboard.html" class="btn btn-light border">
+                <i class="bi bi-grid me-1"></i>
+                <span class="d-none d-sm-inline">Dashboard</span>
+            </a>
+            <a href="student-form.html" class="btn btn-primary">
+                <i class="bi bi-person-plus me-1"></i>
+                Add Student
+            </a>
+        </div>
+    </div>
+</nav>
 
+<main class="page-container">
 
-<script>
+    <!-- Page heading -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <div class="muted mb-2">
+                <a href="dashboard.html" class="text-decoration-none muted">Dashboard</a>
+                / Students
+            </div>
+            <h1 class="page-title mb-2">Student Management</h1>
+            <p class="muted mb-0">
+                Manage student records, classes and contact information.
+            </p>
+        </div>
 
-    /* =====================================================
-       GLOBAL
-    ====================================================== */
+        <button class="btn btn-outline-secondary" id="refreshBtn" type="button">
+            <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+        </button>
+    </div>
 
-    let students = [];
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+                <div class="stat-number" id="totalStudents">0</div>
+                <div class="stat-label">TOTAL STUDENTS</div>
+            </div>
+        </div>
 
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-person-check-fill"></i></div>
+                <div class="stat-number" id="classCount">0</div>
+                <div class="stat-label">CLASSES</div>
+            </div>
+        </div>
 
-    /* =====================================================
-       PAGE HTML
-    ====================================================== */
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-gender-male"></i></div>
+                <div class="stat-number" id="maleCount">0</div>
+                <div class="stat-label">MALE STUDENTS</div>
+            </div>
+        </div>
 
-    function createStudentsPage() {
+        <div class="col-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-gender-female"></i></div>
+                <div class="stat-number" id="femaleCount">0</div>
+                <div class="stat-label">FEMALE STUDENTS</div>
+            </div>
+        </div>
+    </div>
 
-        document.getElementById("pageContent").innerHTML = `
+    <!-- Student table panel -->
+    <section class="panel">
+        <div class="panel-header">
+            <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                <div>
+                    <h5 class="fw-bold mb-1">All Students</h5>
+                    <p class="muted mb-0" style="font-size: 12px;">
+                        Student records loaded from the database
+                    </p>
+                </div>
+                <span class="badge text-bg-light border" id="resultCount">0 records</span>
+            </div>
+        </div>
 
-            <div class="students-page">
-
-
-                <!-- PAGE TOP -->
-
-                <div class="student-page-top">
-
-                    <div class="student-page-title">
-
-                        <h2>
-                            Student Management
-                        </h2>
-
-                        <p>
-                            Manage students, profiles and ID cards
-                        </p>
-
+        <div class="panel-body">
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6">
+                    <div class="position-relative">
+                        <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 muted"></i>
+                        <input
+                            id="searchInput"
+                            class="form-control ps-5"
+                            type="search"
+                            placeholder="Search by name, phone or parent..."
+                            aria-label="Search students"
+                        >
                     </div>
+                </div>
 
+                <div class="col-6 col-md-3">
+                    <select id="classFilter" class="form-select" aria-label="Filter by class">
+                        <option value="">All Classes</option>
+                    </select>
+                </div>
 
-                    <button
-                        class="refresh-btn"
-                        onclick="loadStudents()"
-                        title="Refresh"
-                    >
-
-                        <i class="bi bi-arrow-clockwise"></i>
-
-                        <span class="refresh-text ms-1">
-                            Refresh
-                        </span>
-
+                <div class="col-6 col-md-3">
+                    <button id="clearFilters" class="btn btn-outline-secondary w-100" type="button">
+                        <i class="bi bi-x-circle me-1"></i> Clear Filters
                     </button>
-
                 </div>
-
-
-
-                <!-- STATISTICS -->
-
-                <div class="row g-3">
-
-
-                    <!-- TOTAL -->
-
-                    <div class="col-6 col-lg-4">
-
-                        <div class="student-stat-card">
-
-                            <div class="student-stat-icon">
-
-                                <i class="bi bi-people-fill"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="student-stat-label">
-                                    Total Students
-                                </div>
-
-                                <div
-                                    class="student-stat-value"
-                                    id="totalStudents"
-                                >
-                                    0
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- ACTIVE -->
-
-                    <div class="col-6 col-lg-4">
-
-                        <div class="student-stat-card">
-
-                            <div class="student-stat-icon">
-
-                                <i class="bi bi-person-check-fill"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="student-stat-label">
-                                    Active Students
-                                </div>
-
-                                <div
-                                    class="student-stat-value"
-                                    id="activeStudents"
-                                >
-                                    0
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- SHOWING -->
-
-                    <div class="col-12 col-lg-4">
-
-                        <div class="student-stat-card">
-
-                            <div class="student-stat-icon">
-
-                                <i class="bi bi-funnel-fill"></i>
-
-                            </div>
-
-                            <div>
-
-                                <div class="student-stat-label">
-                                    Showing
-                                </div>
-
-                                <div
-                                    class="student-stat-value"
-                                    id="showingStudents"
-                                >
-                                    0
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- FILTERS -->
-
-                <div class="student-filter-panel">
-
-                    <div class="filter-title">
-
-                        <i class="bi bi-search me-1"></i>
-
-                        Search & Filter Students
-
-                    </div>
-
-
-                    <div class="row g-2">
-
-
-                        <!-- SEARCH -->
-
-                        <div class="col-12 col-md-5">
-
-                            <input
-                                type="text"
-                                id="studentSearch"
-                                class="form-control"
-                                placeholder="Search name, phone or parent..."
-                                oninput="filterStudents()"
-                            >
-
-                        </div>
-
-
-
-                        <!-- CLASS -->
-
-                        <div class="col-6 col-md-3">
-
-                            <select
-                                id="classFilter"
-                                class="form-select"
-                                onchange="filterStudents()"
-                            >
-
-                                <option value="">
-                                    All Classes
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <!-- STATUS -->
-
-                        <div class="col-6 col-md-2">
-
-                            <select
-                                id="statusFilter"
-                                class="form-select"
-                                onchange="filterStudents()"
-                            >
-
-                                <option value="">
-                                    All Status
-                                </option>
-
-                                <option value="active">
-                                    Active
-                                </option>
-
-                                <option value="inactive">
-                                    Inactive
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <!-- CLEAR -->
-
-                        <div class="col-12 col-md-2">
-
-                            <button
-                                class="btn btn-outline-secondary w-100"
-                                style="min-height:43px;border-radius:9px;"
-                                onclick="clearFilters()"
-                            >
-
-                                <i class="bi bi-x-circle me-1"></i>
-
-                                Clear
-
-                            </button>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- STUDENT LIST -->
-
-                <div class="student-table-panel">
-
-
-                    <!-- HEADER -->
-
-                    <div class="student-table-header">
-
-                        <h3>
-
-                            <i class="bi bi-mortarboard-fill me-1"></i>
-
-                            Student List
-
-                        </h3>
-
-                        <span id="studentCountText">
-                            0 students
-                        </span>
-
-                    </div>
-
-
-
-                    <!-- DESKTOP TABLE -->
-
-                    <div class="desktop-student-table">
-
-                        <div class="table-responsive">
-
-                            <table
-                                class="table students-table"
-                            >
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>
-                                            ID
-                                        </th>
-
-                                        <th>
-                                            Student
-                                        </th>
-
-                                        <th>
-                                            Class
-                                        </th>
-
-                                        <th>
-                                            Phone
-                                        </th>
-
-                                        <th>
-                                            Parent
-                                        </th>
-
-                                        <th>
-                                            Status
-                                        </th>
-
-                                        <th>
-                                            Actions
-                                        </th>
-
-                                    </tr>
-
-                                </thead>
-
-
-                                <tbody
-                                    id="studentsTableBody"
-                                >
-
-                                    <tr>
-
-                                        <td colspan="7">
-
-                                            <div class="students-loading">
-
-                                                <div
-                                                    class="spinner-border"
-                                                ></div>
-
-                                                <div>
-                                                    Loading students...
-                                                </div>
-
-                                            </div>
-
-                                        </td>
-
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- MOBILE CARDS -->
-
-                    <div
-                        class="mobile-student-list"
-                        id="mobileStudentList"
-                    >
-
-                    </div>
-
-
-                </div>
-
-
             </div>
 
-        `;
+            <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
 
-    }
+            <!-- Desktop table -->
+            <div class="table-responsive d-none d-md-block">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Class</th>
+                            <th>Phone</th>
+                            <th>Parent</th>
+                            <th>Admission Date</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody">
+                        <tr>
+                            <td colspan="6">
+                                <div class="loading">
+                                    <div class="spinner-border spinner-border-sm me-2"></div>
+                                    Loading students...
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-
-    /* =====================================================
-       LOAD STUDENTS
-    ====================================================== */
-
-    async function loadStudents() {
-
-        const tableBody =
-            document.getElementById(
-                "studentsTableBody"
-            );
-
-        const mobileList =
-            document.getElementById(
-                "mobileStudentList"
-            );
-
-
-        tableBody.innerHTML = `
-
-            <tr>
-
-                <td colspan="7">
-
-                    <div class="students-loading">
-
-                        <div
-                            class="spinner-border"
-                        ></div>
-
-                        <div>
-                            Loading students...
-                        </div>
-
-                    </div>
-
-                </td>
-
-            </tr>
-
-        `;
-
-
-        mobileList.innerHTML = `
-
-            <div class="students-loading">
-
-                <div
-                    class="spinner-border"
-                ></div>
-
-                <div>
+            <!-- Mobile student list -->
+            <div id="mobileStudentsList" class="d-md-none">
+                <div class="loading">
+                    <div class="spinner-border spinner-border-sm me-2"></div>
                     Loading students...
                 </div>
-
             </div>
 
-        `;
-
-
-        try {
-
-            const response =
-                await fetch("/api/students");
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to load students"
-                );
-
-            }
-
-
-            students =
-                await response.json();
-
-
-            updateStatistics();
-
-            populateClassFilter();
-
-            filterStudents();
-
-
-        } catch (error) {
-
-            console.error(
-                "Student loading error:",
-                error
-            );
-
-
-            tableBody.innerHTML = `
-
-                <tr>
-
-                    <td colspan="7">
-
-                        <div class="empty-state">
-
-                            <i class="bi bi-exclamation-circle"></i>
-
-                            <h4>
-                                Unable to load students
-                            </h4>
-
-                            <p>
-                                Please check your server and try again.
-                            </p>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-
-            mobileList.innerHTML = `
-
-                <div class="empty-state">
-
-                    <i class="bi bi-exclamation-circle"></i>
-
-                    <h4>
-                        Unable to load students
-                    </h4>
-
-                    <p>
-                        Please check your server and try again.
-                    </p>
-
-                </div>
-
-            `;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       UPDATE STATISTICS
-    ====================================================== */
-
-    function updateStatistics() {
-
-        const total =
-            students.length;
-
-
-        const active =
-            students.filter(
-                student =>
-                    getStatus(student)
-                        .toLowerCase() === "active"
-            ).length;
-
-
-        document.getElementById(
-            "totalStudents"
-        ).textContent = total;
-
-
-        document.getElementById(
-            "activeStudents"
-        ).textContent = active;
-
-    }
-
-
-    /* =====================================================
-       CLASS FILTER
-    ====================================================== */
-
-    function populateClassFilter() {
-
-        const select =
-            document.getElementById(
-                "classFilter"
-            );
-
-
-        const currentValue =
-            select.value;
-
-
-        const classes =
-            [
-                ...new Set(
-                    students
-                        .map(
-                            student =>
-                                getClass(student)
-                        )
-                        .filter(
-                            value =>
-                                value !== "-"
-                        )
-                )
-            ];
-
-
-        classes.sort(
-            (a, b) =>
-                String(a).localeCompare(
-                    String(b),
-                    undefined,
-                    {
-                        numeric: true
-                    }
-                )
-        );
-
-
-        select.innerHTML = `
-
-            <option value="">
-                All Classes
-            </option>
-
-        `;
-
-
-        classes.forEach(
-            className => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    className;
-
-                option.textContent =
-                    `Class ${className}`;
-
-                select.appendChild(
-                    option
-                );
-
-            }
-        );
-
-
-        if (
-            classes.includes(currentValue)
-        ) {
-
-            select.value =
-                currentValue;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       FILTER
-    ====================================================== */
-
-    function filterStudents() {
-
-        const search =
-            document
-                .getElementById(
-                    "studentSearch"
-                )
-                .value
-                .trim()
-                .toLowerCase();
-
-
-        const classFilter =
-            document
-                .getElementById(
-                    "classFilter"
-                )
-                .value
-                .trim()
-                .toLowerCase();
-
-
-        const statusFilter =
-            document
-                .getElementById(
-                    "statusFilter"
-                )
-                .value
-                .trim()
-                .toLowerCase();
-
-
-        const filtered =
-            students.filter(
-                student => {
-
-                    const name =
-                        getName(student)
-                            .toLowerCase();
-
-                    const phone =
-                        getPhone(student)
-                            .toLowerCase();
-
-                    const parent =
-                        getParent(student)
-                            .toLowerCase();
-
-                    const className =
-                        getClass(student)
-                            .toLowerCase();
-
-                    const status =
-                        getStatus(student)
-                            .toLowerCase();
-
-
-                    const matchesSearch =
-                        !search ||
-                        name.includes(search) ||
-                        phone.includes(search) ||
-                        parent.includes(search);
-
-
-                    const matchesClass =
-                        !classFilter ||
-                        className === classFilter;
-
-
-                    const matchesStatus =
-                        !statusFilter ||
-                        status === statusFilter;
-
-
-                    return (
-                        matchesSearch &&
-                        matchesClass &&
-                        matchesStatus
-                    );
-
-                }
-            );
-
-
-        document.getElementById(
-            "showingStudents"
-        ).textContent =
-            filtered.length;
-
-
-        document.getElementById(
-            "studentCountText"
-        ).textContent =
-            `${filtered.length} ${
-                filtered.length === 1
-                    ? "student"
-                    : "students"
-            }`;
-
-
-        renderDesktopTable(
-            filtered
-        );
-
-
-        renderMobileCards(
-            filtered
-        );
-
-    }
-
-
-    /* =====================================================
-       DESKTOP TABLE
-    ====================================================== */
-
-    function renderDesktopTable(
-        list
-    ) {
-
-        const body =
-            document.getElementById(
-                "studentsTableBody"
-            );
-
-
-        if (!list.length) {
-
-            body.innerHTML = `
-
-                <tr>
-
-                    <td colspan="7">
-
-                        <div class="empty-state">
-
-                            <i class="bi bi-person-x"></i>
-
-                            <h4>
-                                No students found
-                            </h4>
-
-                            <p>
-                                Try changing your search or filters.
-                            </p>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        body.innerHTML =
-            list.map(
-                student =>
-                    createDesktopRow(
-                        student
-                    )
-            ).join("");
-
-    }
-
-
-    /* =====================================================
-       DESKTOP ROW
-    ====================================================== */
-
-    function createDesktopRow(
-        student
-    ) {
-
-        const id =
-            getId(student);
-
-
-        const name =
-            getName(student);
-
-
-        const className =
-            getClass(student);
-
-
-        const phone =
-            getPhone(student);
-
-
-        const parent =
-            getParent(student);
-
-
-        const status =
-            getStatus(student);
-
-
-        return `
-
-            <tr>
-
-
-                <!-- ID -->
-
-                <td>
-
-                    <strong>
-                        ${escapeHtml(id)}
-                    </strong>
-
-                </td>
-
-
-                <!-- STUDENT -->
-
-                <td>
-
-                    <div class="student-name-cell">
-
-                        <div class="student-avatar">
-
-                            ${getInitials(name)}
-
-                        </div>
-
-                        <div>
-
-                            <div class="student-name-main">
-
-                                ${escapeHtml(name)}
-
-                            </div>
-
-                            <div class="student-id-small">
-
-                                GA-${String(id).padStart(4, "0")}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </td>
-
-
-                <!-- CLASS -->
-
-                <td>
-
-                    <strong>
-                        ${escapeHtml(className)}
-                    </strong>
-
-                </td>
-
-
-                <!-- PHONE -->
-
-                <td>
-
-                    ${
-                        phone !== "-"
-                            ? `
-                                <a
-                                    href="tel:${escapeHtml(phone)}"
-                                    style="text-decoration:none;color:#2d7dd2;font-weight:700;"
-                                >
-                                    ${escapeHtml(phone)}
-                                </a>
-                              `
-                            : "-"
-                    }
-
-                </td>
-
-
-                <!-- PARENT -->
-
-                <td>
-
-                    ${escapeHtml(parent)}
-
-                </td>
-
-
-                <!-- STATUS -->
-
-                <td>
-
-                    ${createStatusBadge(status)}
-
-                </td>
-
-
-                <!-- ACTIONS -->
-
-                <td>
-
-                    ${createDesktopActions(id)}
-
-                </td>
-
-
-            </tr>
-
-        `;
-
-    }
-
-
-    /* =====================================================
-       DESKTOP ACTIONS
-    ====================================================== */
-
-    function createDesktopActions(
-        id
-    ) {
-
-        return `
-
-            <div class="student-actions">
-
-
-                <a
-                    href="student-details.html?id=${encodeURIComponent(id)}"
-                    class="student-action-btn view"
-                    title="View Student"
-                >
-
-                    <i class="bi bi-eye"></i>
-
+            <div id="emptyState" class="empty-state d-none">
+                <i class="bi bi-people"></i>
+                <h6 class="fw-bold mt-3">No students found</h6>
+                <p class="mb-3">Try changing your search or add a student.</p>
+                <a href="student-form.html" class="btn btn-primary">
+                    <i class="bi bi-person-plus me-1"></i> Add Student
                 </a>
-
-
-                <a
-                    href="student-id-card.html?id=${encodeURIComponent(id)}"
-                    class="student-action-btn card"
-                    title="Student ID Card"
-                >
-
-                    <i class="bi bi-person-vcard"></i>
-
-                </a>
-
-
-                <a
-                    href="student-form.html?id=${encodeURIComponent(id)}"
-                    class="student-action-btn edit"
-                    title="Edit Student"
-                >
-
-                    <i class="bi bi-pencil"></i>
-
-                </a>
-
-
-                <button
-                    type="button"
-                    class="student-action-btn delete"
-                    title="Delete Student"
-                    onclick="deleteStudent(${Number(id)})"
-                >
-
-                    <i class="bi bi-trash"></i>
-
-                </button>
-
-
             </div>
+        </div>
+    </section>
 
-        `;
+    <footer class="footer">
+        © <span id="currentYear"></span> Genius Academy. All rights reserved.
+    </footer>
 
+</main>
+
+<script>
+"use strict";
+
+/* =====================================================
+   STUDENT MANAGEMENT
+   Backend API: /api/students
+===================================================== */
+
+let students = [];
+let isLoading = false;
+let isDeleting = false;
+
+const tableBody = document.getElementById("studentsTableBody");
+const mobileList = document.getElementById("mobileStudentsList");
+const searchInput = document.getElementById("searchInput");
+const classFilter = document.getElementById("classFilter");
+const errorMessage = document.getElementById("errorMessage");
+const emptyState = document.getElementById("emptyState");
+const refreshBtn = document.getElementById("refreshBtn");
+
+/* Safely read fields from the student API response */
+
+function getId(student) {
+    return student.student_id ?? student.id ?? student.studentId;
+}
+
+function getName(student) {
+    return student.student_name
+        ?? student.name
+        ?? student.studentName
+        ?? "Unnamed Student";
+}
+
+function getClass(student) {
+    return student.standard
+        ?? student.className
+        ?? student.class_name
+        ?? student.class
+        ?? "Not assigned";
+}
+
+function getPhone(student) {
+    return student.phone ?? student.student_phone ?? "";
+}
+
+function getParentName(student) {
+    return student.parent_name ?? student.parentName ?? "";
+}
+
+function getAdmissionDate(student) {
+    const date = student.admission_date ?? student.admissionDate;
+
+    if (!date) return "—";
+
+    const dateText = String(date).substring(0, 10);
+    const parsedDate = new Date(dateText + "T00:00:00");
+
+    if (Number.isNaN(parsedDate.getTime())) {
+        return dateText;
     }
 
+    return parsedDate.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
 
-    /* =====================================================
-       MOBILE CARDS
-    ====================================================== */
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
 
-    function renderMobileCards(
-        list
-    ) {
+function getInitials(name) {
+    return String(name)
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(part => part.charAt(0).toUpperCase())
+        .join("") || "?";
+}
 
-        const container =
-            document.getElementById(
-                "mobileStudentList"
-            );
+function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.classList.remove("d-none");
+}
 
+function hideError() {
+    errorMessage.textContent = "";
+    errorMessage.classList.add("d-none");
+}
 
-        if (!list.length) {
+/* =====================================================
+   LOAD STUDENTS FROM BACKEND
+===================================================== */
 
-            container.innerHTML = `
+async function loadStudents() {
+    if (isLoading) return;
 
-                <div class="empty-state">
+    isLoading = true;
+    refreshBtn.disabled = true;
+    hideError();
 
-                    <i class="bi bi-person-x"></i>
-
-                    <h4>
-                        No students found
-                    </h4>
-
-                    <p>
-                        Try changing your search or filters.
-                    </p>
-
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="6">
+                <div class="loading">
+                    <div class="spinner-border spinner-border-sm me-2"></div>
+                    Loading students...
                 </div>
+            </td>
+        </tr>`;
 
-            `;
+    mobileList.innerHTML = `
+        <div class="loading">
+            <div class="spinner-border spinner-border-sm me-2"></div>
+            Loading students...
+        </div>`;
 
-            return;
+    try {
+        const response = await fetch("/api/students", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            },
+            cache: "no-store"
+        });
 
+        if (!response.ok) {
+            throw new Error(`Unable to load students. HTTP ${response.status}`);
         }
 
-
-        container.innerHTML =
-            list.map(
-                student =>
-                    createMobileCard(
-                        student
-                    )
-            ).join("");
-
-    }
-
-
-    /* =====================================================
-       MOBILE CARD
-    ====================================================== */
-
-    function createMobileCard(
-        student
-    ) {
-
-        const id =
-            getId(student);
-
-
-        const name =
-            getName(student);
-
-
-        const className =
-            getClass(student);
-
-
-        const phone =
-            getPhone(student);
-
-
-        const parent =
-            getParent(student);
-
-
-        const status =
-            getStatus(student);
-
-
-        return `
-
-            <div class="mobile-student-card">
-
-
-                <!-- TOP -->
-
-                <div class="mobile-student-top">
-
-
-                    <div class="mobile-student-name-box">
-
-
-                        <div class="student-avatar">
-
-                            ${getInitials(name)}
-
-                        </div>
-
-
-                        <div style="min-width:0;">
-
-                            <div class="mobile-student-name">
-
-                                ${escapeHtml(name)}
-
-                            </div>
-
-
-                            <div class="mobile-student-id">
-
-                                Student ID:
-                                GA-${String(id).padStart(4, "0")}
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-
-                    <div>
-
-                        ${createStatusBadge(status)}
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- DETAILS -->
-
-                <div class="mobile-details">
-
-
-                    <div class="mobile-detail-row">
-
-                        <span class="mobile-detail-label">
-
-                            <i class="bi bi-mortarboard me-1"></i>
-                            Class
-
-                        </span>
-
-                        <span class="mobile-detail-value">
-
-                            ${escapeHtml(className)}
-
-                        </span>
-
-                    </div>
-
-
-                    <div class="mobile-detail-row">
-
-                        <span class="mobile-detail-label">
-
-                            <i class="bi bi-telephone me-1"></i>
-                            Phone
-
-                        </span>
-
-                        <span class="mobile-detail-value">
-
-                            ${
-                                phone !== "-"
-                                    ? `
-                                        <a
-                                            href="tel:${escapeHtml(phone)}"
-                                            class="mobile-phone-link"
-                                        >
-                                            ${escapeHtml(phone)}
-                                        </a>
-                                      `
-                                    : "-"
-                            }
-
-                        </span>
-
-                    </div>
-
-
-                    <div class="mobile-detail-row">
-
-                        <span class="mobile-detail-label">
-
-                            <i class="bi bi-person me-1"></i>
-                            Parent
-
-                        </span>
-
-                        <span class="mobile-detail-value">
-
-                            ${escapeHtml(parent)}
-
-                        </span>
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- ACTIONS -->
-
-                <div class="mobile-actions">
-
-
-                    <a
-                        href="student-details.html?id=${encodeURIComponent(id)}"
-                        class="mobile-action view"
-                    >
-
-                        <i class="bi bi-eye me-1"></i>
-                        View
-
-                    </a>
-
-
-                    <a
-                        href="student-id-card.html?id=${encodeURIComponent(id)}"
-                        class="mobile-action card"
-                    >
-
-                        <i class="bi bi-person-vcard me-1"></i>
-                        ID Card
-
-                    </a>
-
-
-                    <a
-                        href="student-form.html?id=${encodeURIComponent(id)}"
-                        class="mobile-action edit"
-                    >
-
-                        <i class="bi bi-pencil me-1"></i>
-                        Edit
-
-                    </a>
-
-
-                    <button
-                        type="button"
-                        class="mobile-action delete"
-                        onclick="deleteStudent(${Number(id)})"
-                    >
-
-                        <i class="bi bi-trash me-1"></i>
-                        Delete
-
-                    </button>
-
-
-                </div>
-
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =====================================================
-       STATUS BADGE
-    ====================================================== */
-
-    function createStatusBadge(
-        status
-    ) {
-
-        const value =
-            status || "Active";
-
-
-        const lower =
-            String(value).toLowerCase();
-
-
-        let className =
-            "other";
-
-
-        if (lower === "active") {
-
-            className =
-                "active";
-
-        } else if (
-            lower === "inactive"
-        ) {
-
-            className =
-                "inactive";
-
+        const result = await response.json();
+
+        // Support a plain array or a common API wrapper
+        let records;
+
+        if (Array.isArray(result)) {
+            records = result;
+        } else if (Array.isArray(result.data)) {
+            records = result.data;
+        } else if (Array.isArray(result.students)) {
+            records = result.students;
+        } else if (result.success === false) {
+            throw new Error(result.message || "The server could not load students.");
+        } else {
+            throw new Error("Unexpected student API response format.");
         }
 
+        students = records;
 
-        return `
+        updateStatistics();
+        populateClassFilter();
+        renderStudents();
 
-            <span class="student-status ${className}">
+    } catch (error) {
+        console.error("Load students error:", error);
 
-                <i class="bi bi-circle-fill" style="font-size:5px;"></i>
+        students = [];
+        updateStatistics();
+        populateClassFilter();
+        renderStudents();
 
-                ${escapeHtml(value)}
-
-            </span>
-
-        `;
-
-    }
-
-
-    /* =====================================================
-       GETTERS
-    ====================================================== */
-
-    function getId(student) {
-
-        return (
-            student.id ??
-            student.studentId ??
-            student.student_id ??
-            "-"
+        showError(
+            "Could not load students from the server. " +
+            (error.message || "Please check your backend and try again.")
         );
-
+    } finally {
+        isLoading = false;
+        refreshBtn.disabled = false;
     }
-
-
-    function getName(student) {
-
-        return (
-            student.name ??
-            student.studentName ??
-            student.student_name ??
-            "Unknown Student"
-        );
-
-    }
-
-
-    function getClass(student) {
-
-        return String(
-            student.className ??
-            student.standard ??
-            student.class ??
-            student.class_name ??
-            "-"
-        );
-
-    }
-
-
-    function getPhone(student) {
-
-        return String(
-            student.phone ??
-            student.studentPhone ??
-            student.mobile ??
-            "-"
-        );
-
-    }
-
-
-    function getParent(student) {
-
-        return String(
-            student.parentName ??
-            student.parent_name ??
-            student.guardianName ??
-            student.guardian_name ??
-            "-"
-        );
-
-    }
-
-
-    function getStatus(student) {
-
-        return String(
-            student.status ??
-            "Active"
-        );
-
-    }
-
-
-    /* =====================================================
-       INITIALS
-    ====================================================== */
-
-    function getInitials(
-        name
-    ) {
-
-        if (
-            !name ||
-            name === "-"
-        ) {
-
-            return "ST";
-
-        }
-
-
-        const words =
-            String(name)
-                .trim()
-                .split(/\s+/);
-
-
-        if (words.length === 1) {
-
-            return words[0]
-                .substring(0, 2)
-                .toUpperCase();
-
-        }
-
-
-        return (
-            words[0][0] +
-            words[words.length - 1][0]
-        ).toUpperCase();
-
-    }
-
-
-    /* =====================================================
-       CLEAR FILTERS
-    ====================================================== */
-
-    function clearFilters() {
-
-        document.getElementById(
-            "studentSearch"
-        ).value = "";
-
-
-        document.getElementById(
-            "classFilter"
-        ).value = "";
-
-
-        document.getElementById(
-            "statusFilter"
-        ).value = "";
-
-
-        filterStudents();
-
-    }
-
-
-    /* =====================================================
-       DELETE STUDENT
-    ====================================================== */
-
-    async function deleteStudent(
-        id
-    ) {
-
-        const student =
-            students.find(
-                item =>
-                    Number(getId(item)) === Number(id)
-            );
-
-
-        const studentName =
-            student
-                ? getName(student)
-                : "this student";
-
-
-        const confirmed =
-            confirm(
-                `Are you sure you want to delete "${studentName}"?\n\nThis action cannot be undone.`
-            );
-
-
-        if (!confirmed) {
-
-            return;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `/api/students/${encodeURIComponent(id)}`,
-                    {
-                        method: "DELETE"
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Delete failed"
-                );
-
-            }
-
-
-            alert(
-                "Student deleted successfully."
-            );
-
-
-            await loadStudents();
-
-
-        } catch (error) {
-
-            console.error(
-                "Delete error:",
-                error
-            );
-
-
-            alert(
-                "Unable to delete student. Please try again."
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       ESCAPE HTML
-    ====================================================== */
-
-    function escapeHtml(
-        value
-    ) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
-            return "-";
-
-        }
-
-
-        return String(value)
-
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-
-            .replace(
-                /</g,
-                "&lt;"
-            )
-
-            .replace(
-                />/g,
-                "&gt;"
-            )
-
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-
-            .replace(
-                /'/g,
-                "&#039;"
-            );
-
-    }
-
-
-    /* =====================================================
-       INITIALIZE PAGE
-    ====================================================== */
-
-    renderLayout(
-        "students",
-        "Student Management"
+}
+
+/* =====================================================
+   STATISTICS
+===================================================== */
+
+function updateStatistics() {
+    document.getElementById("totalStudents").textContent = students.length;
+
+    const classes = new Set(
+        students
+            .map(student => String(getClass(student)))
+            .filter(value => value !== "Not assigned")
     );
 
+    document.getElementById("classCount").textContent = classes.size;
 
-    createStudentsPage();
+    document.getElementById("maleCount").textContent =
+        students.filter(student =>
+            String(student.gender ?? "").toLowerCase() === "male"
+        ).length;
 
+    document.getElementById("femaleCount").textContent =
+        students.filter(student =>
+            String(student.gender ?? "").toLowerCase() === "female"
+        ).length;
+}
 
-    loadStudents();
+/* =====================================================
+   CLASS FILTER
+===================================================== */
 
+function populateClassFilter() {
+    const previousValue = classFilter.value;
+
+    const classes = [...new Set(
+        students
+            .map(student => String(getClass(student)))
+            .filter(value => value !== "Not assigned")
+    )].sort((a, b) => a.localeCompare(b, undefined, {
+        numeric: true
+    }));
+
+    classFilter.innerHTML = '<option value="">All Classes</option>';
+
+    classes.forEach(className => {
+        const option = document.createElement("option");
+        option.value = className;
+        option.textContent = "Class " + className;
+        classFilter.appendChild(option);
+    });
+
+    if (classes.includes(previousValue)) {
+        classFilter.value = previousValue;
+    }
+}
+
+/* =====================================================
+   SEARCH AND FILTER
+===================================================== */
+
+function getFilteredStudents() {
+    const query = searchInput.value.trim().toLowerCase();
+    const selectedClass = classFilter.value;
+
+    return students.filter(student => {
+        const searchableText = [
+            getName(student),
+            getPhone(student),
+            getParentName(student),
+            getClass(student),
+            student.school_name ?? student.schoolName ?? ""
+        ].join(" ").toLowerCase();
+
+        const matchesSearch = !query || searchableText.includes(query);
+        const matchesClass =
+            !selectedClass || String(getClass(student)) === selectedClass;
+
+        return matchesSearch && matchesClass;
+    });
+}
+
+/* =====================================================
+   RENDER STUDENTS
+===================================================== */
+
+function renderStudents() {
+    const filtered = getFilteredStudents();
+
+    document.getElementById("resultCount").textContent =
+        `${filtered.length} record${filtered.length === 1 ? "" : "s"}`;
+
+    emptyState.classList.toggle("d-none", filtered.length !== 0);
+
+    if (filtered.length === 0) {
+        tableBody.innerHTML = "";
+        mobileList.innerHTML = "";
+        return;
+    }
+
+    tableBody.innerHTML = filtered.map(student => {
+        const id = getId(student);
+        const name = getName(student);
+        const idValue = escapeHTML(id);
+        const nameValue = escapeHTML(name);
+        const classValue = escapeHTML(getClass(student));
+        const phone = escapeHTML(getPhone(student) || "—");
+        const parent = escapeHTML(getParentName(student) || "—");
+        const admissionDate = escapeHTML(getAdmissionDate(student));
+
+        return `
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="student-avatar">
+                            ${escapeHTML(getInitials(name))}
+                        </div>
+                        <div>
+                            <div class="student-name">${nameValue}</div>
+                            <small class="muted">ID: ${idValue}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge-class">${classValue}</span>
+                </td>
+                <td>${phone}</td>
+                <td>${parent}</td>
+                <td>${admissionDate}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a class="action-btn"
+                           href="student-details.html?id=${encodeURIComponent(id)}"
+                           title="View student"
+                           aria-label="View student ${nameValue}">
+                            <i class="bi bi-eye"></i>
+                        </a>
+
+                        <a class="action-btn"
+                           href="student-form.html?id=${encodeURIComponent(id)}"
+                           title="Edit student"
+                           aria-label="Edit student ${nameValue}">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+
+                        <button class="action-btn delete"
+                                type="button"
+                                data-delete-id="${idValue}"
+                                title="Delete student"
+                                aria-label="Delete student ${nameValue}">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>`;
+    }).join("");
+
+    mobileList.innerHTML = filtered.map(student => {
+        const id = getId(student);
+        const name = getName(student);
+
+        return `
+            <div class="mobile-student">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="student-avatar">
+                        ${escapeHTML(getInitials(name))}
+                    </div>
+
+                    <div class="flex-grow-1 min-w-0">
+                        <div class="student-name">
+                            ${escapeHTML(name)}
+                        </div>
+
+                        <div class="muted small mt-1">
+                            ID: ${escapeHTML(id)}
+                        </div>
+
+                        <div class="mt-2">
+                            <span class="badge-class">
+                                Class ${escapeHTML(getClass(student))}
+                            </span>
+                        </div>
+
+                        <div class="muted small mt-2">
+                            <i class="bi bi-telephone me-1"></i>
+                            ${escapeHTML(getPhone(student) || "No phone")}
+                        </div>
+
+                        <div class="muted small mt-1">
+                            <i class="bi bi-person me-1"></i>
+                            Parent: ${escapeHTML(getParentName(student) || "—")}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                    <a class="action-btn"
+                       href="student-details.html?id=${encodeURIComponent(id)}"
+                       title="View student">
+                        <i class="bi bi-eye"></i>
+                    </a>
+
+                    <a class="action-btn"
+                       href="student-form.html?id=${encodeURIComponent(id)}"
+                       title="Edit student">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+
+                    <button class="action-btn delete"
+                            type="button"
+                            data-delete-id="${escapeHTML(id)}"
+                            title="Delete student">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+            </div>`;
+    }).join("");
+}
+
+/* =====================================================
+   DELETE STUDENT
+===================================================== */
+
+async function deleteStudent(id) {
+    if (isDeleting) return;
+
+    const student = students.find(
+        item => String(getId(item)) === String(id)
+    );
+
+    if (!student) {
+        alert("Student not found. Please refresh the page.");
+        return;
+    }
+
+    const studentName = getName(student);
+
+    const confirmed = confirm(
+        `Are you sure you want to delete "${studentName}"?\n\n` +
+        "This action cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    isDeleting = true;
+    hideError();
+
+    try {
+        const response = await fetch(
+            `/api/students/${encodeURIComponent(id)}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json"
+                }
+            }
+        );
+
+        const responseText = await response.text();
+        let result = {};
+
+        if (responseText) {
+            try {
+                result = JSON.parse(responseText);
+            } catch {
+                // Some APIs return plain text or an empty response.
+                if (!response.ok) {
+                    throw new Error(
+                        `Server error: HTTP ${response.status}. ` +
+                        responseText.slice(0, 200)
+                    );
+                }
+
+                result = { message: responseText };
+            }
+        }
+
+        console.log("Delete HTTP status:", response.status);
+        console.log("Delete response:", result);
+
+        if (!response.ok) {
+            throw new Error(
+                result.message ||
+                `Student deletion failed. HTTP ${response.status}`
+            );
+        }
+
+        if (result.success === false) {
+            throw new Error(
+                result.message || "The server could not delete this student."
+            );
+        }
+
+        // Confirm the latest state using the GET API
+        const verifyResponse = await fetch("/api/students", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            },
+            cache: "no-store"
+        });
+
+        if (!verifyResponse.ok) {
+            throw new Error(
+                "Delete request returned success, but verification failed. " +
+                "Refresh the page to check the current student list."
+            );
+        }
+
+        const verifyResult = await verifyResponse.json();
+
+        const latestStudents = Array.isArray(verifyResult)
+            ? verifyResult
+            : Array.isArray(verifyResult.data)
+                ? verifyResult.data
+                : Array.isArray(verifyResult.students)
+                    ? verifyResult.students
+                    : null;
+
+        if (!latestStudents) {
+            throw new Error(
+                "Could not verify deletion because the student list response was unexpected."
+            );
+        }
+
+        students = latestStudents;
+
+        updateStatistics();
+        populateClassFilter();
+        renderStudents();
+
+        const stillExists = students.some(
+            item => String(getId(item)) === String(id)
+        );
+
+        if (stillExists) {
+            throw new Error(
+                "The student still exists in the database list. " +
+                "Check the backend DELETE endpoint and database constraints."
+            );
+        }
+
+        alert(`Student "${studentName}" deleted successfully.`);
+
+    } catch (error) {
+        console.error("Delete student error:", error);
+
+        showError(
+            "Student could not be deleted. " +
+            (error.message || "Unknown error")
+        );
+
+    } finally {
+        isDeleting = false;
+    }
+}
+
+/* =====================================================
+   EVENT LISTENERS
+===================================================== */
+
+searchInput.addEventListener("input", renderStudents);
+classFilter.addEventListener("change", renderStudents);
+
+refreshBtn.addEventListener("click", loadStudents);
+
+document.getElementById("clearFilters").addEventListener("click", () => {
+    searchInput.value = "";
+    classFilter.value = "";
+    renderStudents();
+});
+
+// One delegated listener handles desktop and mobile delete buttons.
+document.addEventListener("click", event => {
+    const button = event.target.closest("[data-delete-id]");
+
+    if (!button) return;
+
+    const id = button.getAttribute("data-delete-id");
+
+    if (id !== null) {
+        deleteStudent(id);
+    }
+});
+
+/* =====================================================
+   INITIALIZE PAGE
+===================================================== */
+
+document.getElementById("currentYear").textContent =
+    new Date().getFullYear();
+
+loadStudents();
 </script>
 
-
 </body>
-
 </html>

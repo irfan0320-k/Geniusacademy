@@ -588,4 +588,247 @@ public class AttendanceApiController {
 
         return report;
     }
+    
+    // ==========================================
+    // BATCH ATTENDANCE - GET STUDENTS FOR A DATE
+    // GET /api/batches/{batchId}/attendance?date=2026-10-27
+    // ==========================================
+
+    @GetMapping("/api/batches/{batchId}/attendance")
+    public List<Map<String, Object>> getBatchAttendance(
+            @PathVariable int batchId,
+            @RequestParam String date) {
+
+        java.sql.Date attendanceDate;
+
+        try {
+            attendanceDate = java.sql.Date.valueOf(date);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Date must be in YYYY-MM-DD format.");
+        }
+
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        String sql =
+                "SELECT s.student_id, s.student_name, s.standard, " +
+                "s.division, s.phone, a.attendance_id, a.status " +
+                "FROM batch_students bs " +
+                "JOIN students s ON s.student_id = bs.student_id " +
+                "LEFT JOIN attendance a ON a.attendance_id = (" +
+                " SELECT MAX(a2.attendance_id) FROM attendance a2 " +
+                " WHERE a2.student_id = s.student_id " +
+                " AND a2.attendance_date = ?) " +
+                "WHERE bs.batch_id = ? " +
+                "ORDER BY s.student_name";
+
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setDate(1, attendanceDate);
+            ps.setInt(2, batchId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> row = new HashMap<>();
+
+                    row.put("studentId", rs.getInt("student_id"));
+                    row.put("name", rs.getString("student_name"));
+                    row.put("standard", rs.getString("standard"));
+                    row.put("division", rs.getString("division"));
+                    row.put("phone", rs.getString("phone"));
+                    row.put("attendanceId", rs.getObject("attendance_id"));
+                    row.put("status", rs.getString("status"));
+
+                    list.add(row);
+                }
+            }
+
+            return list;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Could not load batch attendance.", e);
+        }
+    }
+
+    // ==========================================
+    // BATCH ATTENDANCE - SAVE OR UPDATE
+    // POST /api/batches/{batchId}/attendance
+    // JSON: {"date":"2026-10-27",
+    //        "attendance":[{"studentId":1,"status":"Present"}]}
+    // ==========================================
+
+    @PostMapping("/api/batches/{batchId}/attendance")
+    public Map<String, Object> saveBatchAttendance(
+            @PathVariable int batchId,
+            @RequestBody Map<String, Object> data) {
+
+        Object dateValue = data.get("date");
+        Object recordsValue = data.get("attendance");
+
+        if (dateValue == null || !(recordsValue instanceof List<?>)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Date and attendance list are required.");
+        }
+
+        java.sql.Date attendanceDate;
+
+        try {
+            attendanceDate = java.sql.Date.valueOf(dateValue.toString());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Date must be in YYYY-MM-DD format.");
+        }
+
+        int saved = 0;
+        List<?> records = (List<?>) recordsValue;
+
+        String membershipSql =
+                "SELECT student_id FROM batch_students " +
+                "WHERE batch_id = ? AND student_id = ?";
+
+        String findSql =
+                "SELECT attendance_id FROM attendance " +
+                "WHERE student_id = ? AND attendance_date = ? " +
+                "ORDER BY attendance_id DESC LIMIT 1";
+
+        String updateSql =
+                "UPDATE attendance SET status = ? " +
+                "WHERE attendance_id = ?";
+
+        String insertSql =
+                "INSERT INTO attendance " +
+                "(student_id, attendance_date, status) VALUES (?, ?, ?)";
+
+        try (Connection con = dataSource.getConnection()) {
+            con.setAutoCommit(false);
+
+            try (PreparedStatement member =
+                         con.prepareStatement(membershipSql);
+                 PreparedStatement find =
+                         con.prepareStatement(findSql);
+                 PreparedStatement update =
+                         con.prepareStatement(updateSql);
+                 PreparedStatement insert =
+                         con.prepareStatement(insertSql)) {
+
+                for (Object item : records) {
+                    if (!(item instanceof Map<?, ?>)) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "Each attendance entry must be an object.");
+                    }
+
+                    Map<?, ?> record = (Map<?, ?>) item;
+                    Object studentValue = record.get("studentId");
+                    Object statusValue = record.get("status");
+
+                    int studentId;
+                    try {
+                        studentId = Integer.parseInt(
+                                String.valueOf(studentValue));
+                        if (studentId <= 0) {
+                            throw new NumberFormatException();
+                        }
+                    } catch (NumberFormatException e) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "A valid studentId is required.");
+                    }
+
+                    if (statusValue == null) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "Attendance status is required.");
+                    }
+
+                    String status = statusValue.toString().trim();
+
+                    if (!status.equalsIgnoreCase("Present")
+                            && !status.equalsIgnoreCase("Absent")
+                            && !status.equalsIgnoreCase("Late")) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "Status must be Present, Absent, or Late.");
+                    }
+
+                    status = status.substring(0, 1).toUpperCase()
+                            + status.substring(1).toLowerCase();
+
+                    // Prevent marking students outside this batch.
+                    member.setInt(1, batchId);
+                    member.setInt(2, studentId);
+
+                    try (ResultSet rs = member.executeQuery()) {
+                        if (!rs.next()) {
+                            throw new ResponseStatusException(
+                                    HttpStatus.BAD_REQUEST,
+                                    "Student " + studentId
+                                    + " is not assigned to this batch.");
+                        }
+                    }
+
+                    // Update an existing record, otherwise insert it.
+                    find.setInt(1, studentId);
+                    find.setDate(2, attendanceDate);
+
+                    Integer attendanceId = null;
+                    try (ResultSet rs = find.executeQuery()) {
+                        if (rs.next()) {
+                            attendanceId = rs.getInt("attendance_id");
+                        }
+                    }
+
+                    if (attendanceId != null) {
+                        update.setString(1, status);
+                        update.setInt(2, attendanceId);
+                        update.executeUpdate();
+                    } else {
+                        insert.setInt(1, studentId);
+                        insert.setDate(2, attendanceDate);
+                        insert.setString(3, status);
+                        insert.executeUpdate();
+                    }
+
+                    saved++;
+                }
+
+                con.commit();
+
+            } catch (Exception e) {
+                con.rollback();
+
+                if (e instanceof ResponseStatusException) {
+                    throw (ResponseStatusException) e;
+                }
+
+                throw e;
+
+            } finally {
+                con.setAutoCommit(true);
+            }
+
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Could not save batch attendance.", e);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("saved", saved);
+        response.put("message", "Batch attendance saved successfully.");
+
+        return response;
+    }
+
 }

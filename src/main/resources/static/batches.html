@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,185 +11,319 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --primary: #4f46e5;
+            --background: #f5f7fb;
+            --text: #1e293b;
+            --muted: #64748b;
+        }
+
+        * { box-sizing: border-box; }
+
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #f5f7fb;
-            color: #202b3c;
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family: "Plus Jakarta Sans", sans-serif;
         }
+
         .navbar {
-            background: #182b49;
+            background: #fff;
+            border-bottom: 1px solid #e8edf5;
         }
+
         .navbar-brand {
-            font-weight: 800;
-            color: white;
-        }
-        .page-title {
+            color: var(--primary);
             font-weight: 800;
         }
+
+        .page-container {
+            max-width: 1450px;
+            margin: auto;
+            padding: 28px 20px 50px;
+        }
+
         .card {
-            border: none;
+            border: 1px solid #e9edf5;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(25, 42, 70, .06);
+            box-shadow: 0 4px 18px rgba(15, 23, 42, .035);
         }
-        .btn-primary {
-            background: #3157d5;
-            border-color: #3157d5;
+
+        .stat-card {
+            padding: 22px;
+            height: 100%;
         }
-        .form-control, .form-select {
-            border-radius: 9px;
-            padding: 11px;
-        }
-        .table th {
-            color: #65738b;
-            font-size: 12px;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-        .table td {
-            vertical-align: middle;
-        }
+
         .stat-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: grid;
-            place-items: center;
-            background: #e9efff;
-            color: #3157d5;
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef2ff;
+            color: var(--primary);
             font-size: 22px;
         }
-        .muted {
-            color: #7b8799;
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 14px;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .muted { color: var(--muted); }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .form-control, .form-select {
+            border-color: #dce3ee;
+            border-radius: 9px;
+            padding: 10px 12px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, .10);
+        }
+
+        .btn {
+            border-radius: 9px;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .35px;
+            white-space: nowrap;
+        }
+
+        .table td { font-size: 13px; }
+
+        .modal-content {
+            border: 0;
+            border-radius: 16px;
+        }
+
+        .modal-header, .modal-footer { border-color: #edf0f5; }
+
+        .attendance-select { min-width: 130px; }
+
+        .attendance-note {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .student-option {
+            cursor: pointer;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .student-option:last-child { border-bottom: 0; }
+
+        .student-option:hover { background: #f8fafc; }
+
+        .student-option .form-check-input {
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .page-container { padding: 20px 12px 35px; }
+            .stat-number { font-size: 24px; }
         }
     </style>
 </head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid px-4">
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container-fluid px-3 px-lg-4">
         <a class="navbar-brand" href="/dashboard.html">
-            <i class="bi bi-mortarboard-fill me-2"></i>GENIUS ACADEMY
+            <i class="bi bi-mortarboard-fill me-2"></i>Genius Academy
         </a>
-        <a href="/dashboard.html" class="btn btn-outline-light btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Dashboard
-        </a>
+
+        <div class="d-flex gap-2 align-items-center">
+            <a href="/dashboard.html" class="btn btn-light btn-sm">
+                <i class="bi bi-house me-1"></i>Dashboard
+            </a>
+            <a href="/attendance.html" class="btn btn-outline-success btn-sm">
+                <i class="bi bi-calendar-check me-1"></i>Attendance
+            </a>
+        </div>
     </div>
 </nav>
 
-<main class="container-fluid px-3 px-lg-4 py-4">
-
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <div>
-            <h2 class="page-title mb-1">Batch Management</h2>
-            <p class="muted mb-0">Create batches, assign teachers and manage students.</p>
-        </div>
-        <button class="btn btn-primary px-4" onclick="openCreateForm()">
-            <i class="bi bi-plus-lg me-2"></i>Create New Batch
-        </button>
-    </div>
+<main class="page-container">
 
     <div id="alertBox"></div>
 
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Batch Management</h2>
+            <p class="muted mb-0">Manage batches, teachers, students and attendance.</p>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="openCreateForm()">
+            <i class="bi bi-plus-circle me-2"></i>Create New Batch
+        </button>
+    </div>
+
+    <!-- Statistics -->
     <div class="row g-3 mb-4">
         <div class="col-12 col-md-4">
-            <div class="card p-3">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="stat-icon"><i class="bi bi-collection"></i></div>
-                    <div>
-                        <div class="muted small">Total Batches</div>
-                        <h3 class="mb-0 fw-bold" id="totalBatches">0</h3>
-                    </div>
-                </div>
+            <div class="card stat-card">
+                <div class="stat-icon"><i class="bi bi-collection"></i></div>
+                <div class="stat-label">Total Batches</div>
+                <div class="stat-number" id="totalBatches">0</div>
             </div>
         </div>
+
         <div class="col-12 col-md-4">
-            <div class="card p-3">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="stat-icon"><i class="bi bi-people"></i></div>
-                    <div>
-                        <div class="muted small">Students in Batches</div>
-                        <h3 class="mb-0 fw-bold" id="totalStudents">0</h3>
-                    </div>
-                </div>
+            <div class="card stat-card">
+                <div class="stat-icon"><i class="bi bi-people"></i></div>
+                <div class="stat-label">Students in Batches</div>
+                <div class="stat-number" id="totalStudents">0</div>
             </div>
         </div>
+
         <div class="col-12 col-md-4">
-            <div class="card p-3">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="stat-icon"><i class="bi bi-person-workspace"></i></div>
-                    <div>
-                        <div class="muted small">Assigned Teachers</div>
-                        <h3 class="mb-0 fw-bold" id="assignedTeachers">0</h3>
-                    </div>
-                </div>
+            <div class="card stat-card">
+                <div class="stat-icon"><i class="bi bi-person-check"></i></div>
+                <div class="stat-label">Assigned Teachers</div>
+                <div class="stat-number" id="assignedTeachers">0</div>
             </div>
         </div>
     </div>
 
+    <!-- Create Batch Form -->
     <div class="card p-3 p-lg-4 mb-4" id="createCard" style="display:none;">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold mb-0" id="formTitle">Create New Batch</h5>
-            <button class="btn btn-light btn-sm" onclick="closeCreateForm()">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0">Create New Batch</h5>
+            <button type="button" class="btn btn-light btn-sm" onclick="closeCreateForm()">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
 
         <form id="batchForm">
             <div class="row g-3">
-                <div class="col-12 col-md-6">
-                    <label class="form-label fw-semibold">Batch Name *</label>
+
+                <div class="col-md-6 col-lg-4">
+                    <label for="batchName" class="form-label">Batch Name *</label>
                     <input type="text" class="form-control" id="batchName"
-                           placeholder="e.g. Class 10 Maths" required>
+                           placeholder="e.g. Class 10 Maths Morning" required>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <label class="form-label fw-semibold">Standard / Class *</label>
+                <div class="col-md-6 col-lg-4">
+                    <label for="standard" class="form-label">Class / Standard *</label>
                     <input type="text" class="form-control" id="standard"
-                           placeholder="e.g. 10" required>
+                           placeholder="e.g. 10th" required>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <label class="form-label fw-semibold">Subject *</label>
+                <div class="col-md-6 col-lg-4">
+                    <label for="subject" class="form-label">Subject *</label>
                     <input type="text" class="form-control" id="subject"
                            placeholder="e.g. Mathematics" required>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <label class="form-label fw-semibold">Teacher *</label>
+                <div class="col-md-6 col-lg-4">
+                    <label for="teacherId" class="form-label">Teacher *</label>
                     <select class="form-select" id="teacherId" required>
                         <option value="">Loading teachers...</option>
                     </select>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <label class="form-label fw-semibold">Batch Timing</label>
+                <div class="col-md-6 col-lg-4">
+                    <label for="timing" class="form-label">Batch Timing</label>
                     <input type="text" class="form-control" id="timing"
-                           placeholder="e.g. 5 PM - 6 PM">
+                           placeholder="e.g. 7:00 PM - 8:00 PM">
                 </div>
 
+                <!-- Searchable Student Selection -->
                 <div class="col-12">
-                    <label class="form-label fw-semibold">Select Existing Students</label>
-                    <div class="muted small mb-2">Hold Ctrl (Windows) to select multiple students.</div>
-                    <select class="form-select" id="studentIds" multiple size="5"></select>
-                    <div class="muted small mt-2">Students already assigned to another batch will not appear here.</div>
-                </div>
+                    <label class="form-label">Assign Students</label>
 
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary px-4" id="saveBtn">
-                        <i class="bi bi-check-circle me-2"></i>Create Batch
-                    </button>
-                    <button type="button" class="btn btn-light ms-2" onclick="closeCreateForm()">Cancel</button>
+                    <div class="border rounded-3 bg-white p-3">
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-7">
+                                <input type="search" class="form-control"
+                                       id="studentSearch"
+                                       placeholder="Search student by name or phone..."
+                                       oninput="renderStudentSelection()">
+                            </div>
+
+                            <div class="col-md-5">
+                                <select class="form-select" id="studentClassFilter"
+                                        onchange="renderStudentSelection()">
+                                    <option value="">All Classes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                            <span class="small fw-semibold">
+                                Selected: <span id="selectedStudentCount">0</span>
+                            </span>
+
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                        onclick="selectVisibleStudents(true)">
+                                    Select All Visible
+                                </button>
+
+                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                        onclick="selectVisibleStudents(false)">
+                                    Clear Visible
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="studentSelectionList"
+                             class="border rounded-2 p-2"
+                             style="max-height:280px; overflow-y:auto;">
+                            <div class="text-muted small p-2">Loading students...</div>
+                        </div>
+                    </div>
+
+                    <div class="attendance-note mt-2">
+                        Only students available for assignment are shown.
+                    </div>
                 </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary" id="saveBtn">
+                    <i class="bi bi-check-circle me-2"></i>Create Batch
+                </button>
+                <button type="button" class="btn btn-light" onclick="closeCreateForm()">
+                    Cancel
+                </button>
             </div>
         </form>
     </div>
 
+    <!-- All Batches -->
     <div class="card p-3 p-lg-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
             <h5 class="fw-bold mb-0">All Batches</h5>
-            <button class="btn btn-light btn-sm" onclick="loadBatches()">
-                <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+
+            <button type="button" class="btn btn-light btn-sm" onclick="loadBatches()">
+                <i class="bi bi-arrow-clockwise me-1"></i>Refresh
             </button>
         </div>
 
@@ -205,27 +340,37 @@
                     <th>Action</th>
                 </tr>
                 </thead>
+
                 <tbody id="batchesBody">
-                <tr><td colspan="7" class="text-center py-4">Loading batches...</td></tr>
+                <tr>
+                    <td colspan="7" class="text-center py-4">Loading batches...</td>
+                </tr>
                 </tbody>
             </table>
         </div>
     </div>
-
 </main>
 
+<!-- Students Modal -->
 <div class="modal fade" id="studentsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0" style="border-radius:16px;">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title fw-bold" id="studentsModalTitle">Batch Students</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
+
             <div class="modal-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
-                        <tr><th>Name</th><th>Class</th><th>Division</th><th>Phone</th></tr>
+                        <tr>
+                            <th>Name</th>
+                            <th>Class</th>
+                            <th>Division</th>
+                            <th>Phone</th>
+                        </tr>
                         </thead>
                         <tbody id="batchStudentsBody"></tbody>
                     </table>
@@ -235,12 +380,89 @@
     </div>
 </div>
 
+<!-- Batch Attendance Modal -->
+<div class="modal fade" id="batchAttendanceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title fw-bold" id="attendanceModalTitle">Batch Attendance</h5>
+                    <div class="attendance-note">
+                        Select a date and mark each student's attendance.
+                    </div>
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="batchAttendanceAlert"></div>
+
+                <div class="row g-3 align-items-end mb-3">
+                    <div class="col-md-4">
+                        <label for="batchAttendanceDate" class="form-label">Attendance Date</label>
+                        <input type="date" class="form-control" id="batchAttendanceDate">
+                    </div>
+
+                    <div class="col-md-8 d-flex flex-wrap justify-content-md-end gap-2">
+                        <button type="button" class="btn btn-outline-success btn-sm"
+                                onclick="setBatchAttendanceForAll('Present')">
+                            <i class="bi bi-check-circle me-1"></i>Mark All Present
+                        </button>
+
+                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                onclick="setBatchAttendanceForAll('Absent')">
+                            <i class="bi bi-x-circle me-1"></i>Mark All Absent
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alert alert-info py-2 small">
+                    New attendance entries default to Present. Change absent or late students before saving.
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Student Name</th>
+                            <th>Class</th>
+                            <th>Attendance Status</th>
+                        </tr>
+                        </thead>
+                        <tbody id="batchAttendanceBody">
+                        <tr>
+                            <td colspan="4" class="text-center py-4">Select a batch.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+
+                <button type="button" class="btn btn-success"
+                        id="saveBatchAttendanceBtn" onclick="saveBatchAttendance()">
+                    <i class="bi bi-check-circle me-1"></i>Save Attendance
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     const API = "/api/batches";
+
     let availableTeachers = [];
     let availableStudents = [];
+    let selectedStudentIds = new Set();
+    let currentAttendanceBatchId = null;
+    let currentAttendanceStudents = [];
 
     function escapeHtml(value) {
         return String(value ?? "").replace(/[&<>"']/g, ch => ({
@@ -256,14 +478,23 @@
         document.getElementById("alertBox").innerHTML = `
             <div class="alert alert-${type} alert-dismissible fade show" role="alert">
                 ${escapeHtml(message)}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
             </div>`;
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
+    function showAttendanceAlert(message, type = "success") {
+        document.getElementById("batchAttendanceAlert").innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${escapeHtml(message)}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>`;
+    }
+
     async function loadOptions() {
         const teacherSelect = document.getElementById("teacherId");
-        const studentSelect = document.getElementById("studentIds");
 
         try {
             const response = await fetch(API + "/options");
@@ -277,33 +508,163 @@
             availableStudents = data.students || [];
 
             teacherSelect.innerHTML = '<option value="">Select Teacher</option>';
+
             availableTeachers.forEach(teacher => {
                 const option = document.createElement("option");
                 option.value = teacher.id;
-                option.textContent = `${teacher.name} - ${teacher.subject || "No subject"}`;
+                option.textContent =
+                    `${teacher.name} - ${teacher.subject || "No subject"}`;
                 teacherSelect.appendChild(option);
             });
 
-            studentSelect.innerHTML = "";
-            availableStudents.forEach(student => {
-                const option = document.createElement("option");
-                option.value = student.id;
-                option.textContent = `${student.name} - Class ${student.standard || ""}${student.division ? " (" + student.division + ")" : ""}`;
-                studentSelect.appendChild(option);
-            });
-
             if (availableTeachers.length === 0) {
-                teacherSelect.innerHTML = '<option value="">No available teachers</option>';
+                teacherSelect.innerHTML =
+                    '<option value="">No available teachers</option>';
             }
+
+            populateStudentClassFilter();
+            renderStudentSelection();
+
         } catch (error) {
-            teacherSelect.innerHTML = '<option value="">Unable to load teachers</option>';
+            teacherSelect.innerHTML =
+                '<option value="">Unable to load teachers</option>';
+
+            document.getElementById("studentSelectionList").innerHTML =
+                '<div class="text-danger small p-2">Unable to load students.</div>';
+
             showAlert(error.message, "danger");
         }
     }
 
+    function populateStudentClassFilter() {
+        const filter = document.getElementById("studentClassFilter");
+
+        const previousValue = filter.value;
+
+        const classes = [...new Set(
+            availableStudents
+                .map(student => String(student.standard || "").trim())
+                .filter(Boolean)
+        )].sort((a, b) =>
+            a.localeCompare(b, undefined, { numeric: true })
+        );
+
+        filter.innerHTML = '<option value="">All Classes</option>';
+
+        classes.forEach(className => {
+            const option = document.createElement("option");
+            option.value = className;
+            option.textContent = "Class " + className;
+            filter.appendChild(option);
+        });
+
+        if (classes.includes(previousValue)) {
+            filter.value = previousValue;
+        }
+    }
+
+    function renderStudentSelection() {
+        const list = document.getElementById("studentSelectionList");
+        const search = document.getElementById("studentSearch").value
+            .trim().toLowerCase();
+        const classFilter = document.getElementById("studentClassFilter").value;
+
+        const filtered = availableStudents.filter(student => {
+            const name = String(student.name || "").toLowerCase();
+            const phone = String(student.phone || "").toLowerCase();
+            const standard = String(student.standard || "").trim();
+
+            return (name.includes(search) || phone.includes(search)) &&
+                (!classFilter || standard === classFilter);
+        });
+
+        document.getElementById("selectedStudentCount").textContent =
+            selectedStudentIds.size;
+
+        if (availableStudents.length === 0) {
+            list.innerHTML =
+                '<div class="text-muted small p-2">No students are available for assignment.</div>';
+            return;
+        }
+
+        if (filtered.length === 0) {
+            list.innerHTML =
+                '<div class="text-muted small p-2">No matching students found.</div>';
+            return;
+        }
+
+        list.innerHTML = filtered.map(student => {
+            const id = Number(student.id);
+            const checked = selectedStudentIds.has(id) ? "checked" : "";
+
+            return `
+                <label class="student-option d-flex align-items-center gap-2 p-2">
+                    <input type="checkbox"
+                           class="form-check-input mt-0"
+                           value="${id}"
+                           ${checked}
+                           onchange="toggleStudentSelection(${id}, this.checked)">
+
+                    <span class="flex-grow-1">
+                        <span class="d-block fw-semibold">
+                            ${escapeHtml(student.name)}
+                        </span>
+                        <small class="text-muted">
+                            Class ${escapeHtml(student.standard || "-")}
+                            ${student.division
+                                ? " · Division " + escapeHtml(student.division)
+                                : ""}
+                            ${student.phone
+                                ? " · " + escapeHtml(student.phone)
+                                : ""}
+                        </small>
+                    </span>
+                </label>`;
+        }).join("");
+    }
+
+    function toggleStudentSelection(studentId, checked) {
+        if (checked) {
+            selectedStudentIds.add(Number(studentId));
+        } else {
+            selectedStudentIds.delete(Number(studentId));
+        }
+
+        document.getElementById("selectedStudentCount").textContent =
+            selectedStudentIds.size;
+    }
+
+    function selectVisibleStudents(checked) {
+        const search = document.getElementById("studentSearch").value
+            .trim().toLowerCase();
+        const classFilter = document.getElementById("studentClassFilter").value;
+
+        availableStudents.forEach(student => {
+            const name = String(student.name || "").toLowerCase();
+            const phone = String(student.phone || "").toLowerCase();
+            const standard = String(student.standard || "").trim();
+
+            const visible =
+                (name.includes(search) || phone.includes(search)) &&
+                (!classFilter || standard === classFilter);
+
+            if (visible) {
+                if (checked) {
+                    selectedStudentIds.add(Number(student.id));
+                } else {
+                    selectedStudentIds.delete(Number(student.id));
+                }
+            }
+        });
+
+        renderStudentSelection();
+    }
+
     async function loadBatches() {
         const body = document.getElementById("batchesBody");
-        body.innerHTML = '<tr><td colspan="7" class="text-center py-4">Loading batches...</td></tr>';
+
+        body.innerHTML =
+            '<tr><td colspan="7" class="text-center py-4">Loading batches...</td></tr>';
 
         try {
             const response = await fetch(API);
@@ -314,53 +675,134 @@
             }
 
             document.getElementById("totalBatches").textContent = batches.length;
+
             document.getElementById("totalStudents").textContent =
-                batches.reduce((sum, batch) => sum + Number(batch.studentCount || 0), 0);
+                batches.reduce((sum, batch) =>
+                    sum + Number(batch.studentCount || 0), 0);
+
             document.getElementById("assignedTeachers").textContent =
-                new Set(batches.map(batch => batch.teacherId)).size;
+                new Set(
+                    batches.map(batch => batch.teacherId).filter(id => id != null)
+                ).size;
 
             if (batches.length === 0) {
-                body.innerHTML = '<tr><td colspan="7" class="text-center py-5 muted">No batches created yet. Click "Create New Batch" to get started.</td></tr>';
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-5 muted">
+                            No batches created yet. Click "Create New Batch" to get started.
+                        </td>
+                    </tr>`;
                 return;
             }
 
-            body.innerHTML = batches.map(batch => `
-                <tr>
-                    <td><div class="fw-bold">${escapeHtml(batch.name)}</div>
-                        <small class="muted">ID: ${escapeHtml(batch.id)}</small></td>
-                    <td>${escapeHtml(batch.standard)}</td>
-                    <td>${escapeHtml(batch.subject)}</td>
-                    <td>${escapeHtml(batch.teacherName)}</td>
-                    <td>${escapeHtml(batch.timing || "Not set")}</td>
-                    <td><span class="badge text-bg-primary">${Number(batch.studentCount || 0)}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary"
-                            onclick="viewStudents(${Number(batch.id)}, '${escapeHtml(batch.name).replace(/'/g, "\\'")}')">
-                            <i class="bi bi-people me-1"></i>Students
-                        </button>
-                    </td>
-                </tr>`).join("");
+            body.innerHTML = batches.map(batch => {
+                const batchId = Number(batch.id);
+                const batchName = String(batch.name ?? "");
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="fw-bold">${escapeHtml(batch.name)}</div>
+                            <small class="muted">ID: ${escapeHtml(batch.id)}</small>
+                        </td>
+                        <td>${escapeHtml(batch.standard)}</td>
+                        <td>${escapeHtml(batch.subject)}</td>
+                        <td>${escapeHtml(batch.teacherName)}</td>
+                        <td>${escapeHtml(batch.timing || "Not set")}</td>
+                        <td>
+                            <span class="badge text-bg-primary">
+                                ${Number(batch.studentCount || 0)}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-primary"
+                                        data-batch-name="${escapeHtml(batchName)}"
+                                        onclick="viewStudents(${batchId}, this.dataset.batchName)">
+                                    <i class="bi bi-people me-1"></i>Students
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-sm btn-success"
+                                        data-batch-name="${escapeHtml(batchName)}"
+                                        onclick="openBatchAttendance(${batchId}, this.dataset.batchName)">
+                                    <i class="bi bi-calendar-check me-1"></i>Attendance
+                                </button>
+
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger"
+                                        data-batch-name="${escapeHtml(batchName)}"
+                                        onclick="deleteBatch(${batchId}, this.dataset.batchName)">
+                                    <i class="bi bi-trash me-1"></i>Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+            }).join("");
+
         } catch (error) {
-            body.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">${escapeHtml(error.message)}</td></tr>`;
+            body.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-danger py-4">
+                        ${escapeHtml(error.message)}
+                    </td>
+                </tr>`;
+        }
+    }
+
+    async function deleteBatch(batchId, batchName) {
+        const confirmed = confirm(
+            `Are you sure you want to delete "${batchName}"?\n\n` +
+            "The batch and its student assignments will be deleted. " +
+            "Attendance history is intended to remain preserved."
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`${API}/${batchId}`, {
+                method: "DELETE"
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || result.success !== true) {
+                throw new Error(result.message || "Could not delete batch.");
+            }
+
+            showAlert(result.message || "Batch deleted successfully.");
+
+            await Promise.all([loadBatches(), loadOptions()]);
+
+        } catch (error) {
+            showAlert(error.message, "danger");
         }
     }
 
     function openCreateForm() {
         document.getElementById("createCard").style.display = "block";
         document.getElementById("createCard").scrollIntoView({ behavior: "smooth" });
+        renderStudentSelection();
     }
 
     function closeCreateForm() {
         document.getElementById("createCard").style.display = "none";
         document.getElementById("batchForm").reset();
+
+        selectedStudentIds.clear();
+        document.getElementById("studentSearch").value = "";
+        document.getElementById("studentClassFilter").value = "";
+
+        renderStudentSelection();
     }
 
     document.getElementById("batchForm").addEventListener("submit", async function(event) {
         event.preventDefault();
 
         const saveBtn = document.getElementById("saveBtn");
-        const selectedStudents = Array.from(document.getElementById("studentIds").selectedOptions)
-            .map(option => Number(option.value));
+
+        const selectedStudents = Array.from(selectedStudentIds);
 
         const payload = {
             name: document.getElementById("batchName").value.trim(),
@@ -377,7 +819,8 @@
         }
 
         saveBtn.disabled = true;
-        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+        saveBtn.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
 
         try {
             const response = await fetch(API, {
@@ -394,22 +837,30 @@
 
             showAlert(result.message || "Batch created successfully!");
             closeCreateForm();
+
             await Promise.all([loadBatches(), loadOptions()]);
+
         } catch (error) {
             showAlert(error.message, "danger");
         } finally {
             saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Create Batch';
+            saveBtn.innerHTML =
+                '<i class="bi bi-check-circle me-2"></i>Create Batch';
         }
     });
 
     async function viewStudents(batchId, batchName) {
         const body = document.getElementById("batchStudentsBody");
-        document.getElementById("studentsModalTitle").textContent = batchName + " — Students";
-        body.innerHTML = '<tr><td colspan="4" class="text-center">Loading...</td></tr>';
 
-        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("studentsModal"));
-        modal.show();
+        document.getElementById("studentsModalTitle").textContent =
+            batchName + " — Students";
+
+        body.innerHTML =
+            '<tr><td colspan="4" class="text-center">Loading...</td></tr>';
+
+        bootstrap.Modal.getOrCreateInstance(
+            document.getElementById("studentsModal")
+        ).show();
 
         try {
             const response = await fetch(`${API}/${batchId}/students`);
@@ -420,7 +871,12 @@
             }
 
             if (students.length === 0) {
-                body.innerHTML = '<tr><td colspan="4" class="text-center muted py-4">No students assigned to this batch.</td></tr>';
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center muted py-4">
+                            No students assigned to this batch.
+                        </td>
+                    </tr>`;
                 return;
             }
 
@@ -431,8 +887,181 @@
                     <td>${escapeHtml(student.division || "-")}</td>
                     <td>${escapeHtml(student.phone || "-")}</td>
                 </tr>`).join("");
+
         } catch (error) {
-            body.innerHTML = `<tr><td colspan="4" class="text-center text-danger">${escapeHtml(error.message)}</td></tr>`;
+            body.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center text-danger">
+                        ${escapeHtml(error.message)}
+                    </td>
+                </tr>`;
+        }
+    }
+
+    function todayForAttendance() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+
+    function openBatchAttendance(batchId, batchName) {
+        currentAttendanceBatchId = batchId;
+
+        document.getElementById("attendanceModalTitle").textContent =
+            batchName + " — Attendance";
+
+        document.getElementById("batchAttendanceDate").value =
+            todayForAttendance();
+
+        document.getElementById("batchAttendanceAlert").innerHTML = "";
+
+        document.getElementById("batchAttendanceBody").innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center py-4">Loading students...</td>
+            </tr>`;
+
+        bootstrap.Modal.getOrCreateInstance(
+            document.getElementById("batchAttendanceModal")
+        ).show();
+
+        loadBatchAttendance();
+    }
+
+    async function loadBatchAttendance() {
+        const body = document.getElementById("batchAttendanceBody");
+        const date = document.getElementById("batchAttendanceDate").value;
+
+        if (!currentAttendanceBatchId || !date) return;
+
+        body.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center py-4">Loading students...</td>
+            </tr>`;
+
+        try {
+            const response = await fetch(
+                `${API}/${currentAttendanceBatchId}/attendance?date=${encodeURIComponent(date)}`
+            );
+
+            const students = await response.json();
+
+            if (!response.ok || !Array.isArray(students)) {
+                throw new Error(
+                    students.message || "Unable to load batch attendance."
+                );
+            }
+
+            currentAttendanceStudents = students;
+
+            if (students.length === 0) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">
+                            No students are assigned to this batch.
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            body.innerHTML = students.map((student, index) => {
+                const status = ["Present", "Absent", "Late"].includes(student.status)
+                    ? student.status : "Present";
+
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td class="fw-semibold">${escapeHtml(student.name)}</td>
+                        <td>${escapeHtml(student.standard || "-")}</td>
+                        <td>
+                            <select class="form-select form-select-sm attendance-select batch-attendance-status"
+                                    data-student-id="${Number(student.studentId)}"
+                                    aria-label="Attendance status for ${escapeHtml(student.name)}">
+                                <option value="Present" ${status === "Present" ? "selected" : ""}>Present</option>
+                                <option value="Absent" ${status === "Absent" ? "selected" : ""}>Absent</option>
+                                <option value="Late" ${status === "Late" ? "selected" : ""}>Late</option>
+                            </select>
+                        </td>
+                    </tr>`;
+            }).join("");
+
+            document.getElementById("batchAttendanceAlert").innerHTML = "";
+
+        } catch (error) {
+            currentAttendanceStudents = [];
+
+            body.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center text-danger py-4">
+                        ${escapeHtml(error.message)}
+                    </td>
+                </tr>`;
+        }
+    }
+
+    document.getElementById("batchAttendanceDate").addEventListener(
+        "change", loadBatchAttendance
+    );
+
+    function setBatchAttendanceForAll(status) {
+        document.querySelectorAll(".batch-attendance-status").forEach(select => {
+            select.value = status;
+        });
+    }
+
+    async function saveBatchAttendance() {
+        const date = document.getElementById("batchAttendanceDate").value;
+        const button = document.getElementById("saveBatchAttendanceBtn");
+        const selects = document.querySelectorAll(".batch-attendance-status");
+
+        if (!currentAttendanceBatchId || !date) {
+            showAttendanceAlert("Please select a batch and date.", "warning");
+            return;
+        }
+
+        if (selects.length === 0) {
+            showAttendanceAlert("There are no students to save.", "warning");
+            return;
+        }
+
+        const attendance = Array.from(selects).map(select => ({
+            studentId: Number(select.dataset.studentId),
+            status: select.value
+        }));
+
+        button.disabled = true;
+        button.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-1"></span>Saving...';
+
+        try {
+            const response = await fetch(
+                `${API}/${currentAttendanceBatchId}/attendance`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ date, attendance })
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || result.success !== true) {
+                throw new Error(result.message || "Unable to save attendance.");
+            }
+
+            showAttendanceAlert(
+                `Attendance saved successfully for ${attendance.length} students.`
+            );
+
+            await loadBatchAttendance();
+
+        } catch (error) {
+            showAttendanceAlert(error.message, "danger");
+        } finally {
+            button.disabled = false;
+            button.innerHTML =
+                '<i class="bi bi-check-circle me-1"></i>Save Attendance';
         }
     }
 
